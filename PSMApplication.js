@@ -11,15 +11,23 @@ function PSMExamPlatform() {
   const [shuffled, setShuffled] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState({});
+  const [bookmarks, setBookmarks] = useState({});
+  const [showOnlyBookmarked, setShowOnlyBookmarked] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(null);
+  const [examStartTime, setExamStartTime] = useState(null);
 
   useEffect(() => {
     const savedNotes = localStorage.getItem('psm-notes');
     const savedResults = localStorage.getItem('psm-results');
+    const savedBookmarks = localStorage.getItem('psm-bookmarks');
     if (savedNotes) {
       setNotes(JSON.parse(savedNotes));
     }
     if (savedResults) {
       setResults(JSON.parse(savedResults));
+    }
+    if (savedBookmarks) {
+      setBookmarks(JSON.parse(savedBookmarks));
     }
     setLoading(false);
   }, []);
@@ -32,19 +40,57 @@ function PSMExamPlatform() {
     localStorage.setItem('psm-results', JSON.stringify(results));
   }, [results]);
 
+  useEffect(() => {
+    localStorage.setItem('psm-bookmarks', JSON.stringify(bookmarks));
+  }, [bookmarks]);
+
+  // Timer countdown effect
+  useEffect(() => {
+    if (timeRemaining === null || submitted || view !== 'exam') return;
+
+    const timer = setInterval(() => {
+      setTimeRemaining(prev => {
+        if (prev <= 1) {
+          // Auto-submit when time runs out
+          setSubmitted(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [submitted, view]);
+
   const saveResults = (newResults) => {
     setResults(newResults);
   };
 
   const startExam = (exam) => {
     if (!exam.questions) return;
-    setShuffled([...exam.questions].sort(() => Math.random() - 0.5));
+    const shuffledQuestions = [...exam.questions].sort(() => Math.random() - 0.5);
+    setShuffled(shuffledQuestions);
     setCurrentExam(exam);
     setAnswers({});
     setSubmitted(false);
     setShowExp({});
     setCurrentQ(0);
+    setShowOnlyBookmarked(false);
     setView('exam');
+
+    // Reset bookmarks for this exam's questions
+    const updatedBookmarks = { ...bookmarks };
+    shuffledQuestions.forEach(q => {
+      delete updatedBookmarks[q.id];
+    });
+    setBookmarks(updatedBookmarks);
+
+    // Set timer based on exam type
+    // PSM I: 60 minutes, PSM II: 90 minutes
+    const isPSM2 = exam.id.toLowerCase().includes('psm2');
+    const duration = isPSM2 ? 90 * 60 : 60 * 60; // in seconds
+    setTimeRemaining(duration);
+    setExamStartTime(Date.now());
   };
 
   const handleSelect = (qId, choice) => {
@@ -61,6 +107,24 @@ function PSMExamPlatform() {
     setNotes(p => ({ ...p, [qId]: text }));
   };
 
+  const toggleBookmark = (qId) => {
+    setBookmarks(p => ({
+      ...p,
+      [qId]: !p[qId]
+    }));
+  };
+
+  const getBookmarkedQuestions = () => {
+    if (!shuffled) return [];
+    return shuffled.filter(q => bookmarks[q.id]);
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const isCorrect = (qId) => {
     const q = shuffled.find(x => x.id === qId);
     const ans = answers[qId] || [];
@@ -71,9 +135,19 @@ function PSMExamPlatform() {
     setSubmitted(true);
     const score = shuffled.filter(q => isCorrect(q.id)).length;
     const pct = Math.round(score / shuffled.length * 100);
+
+    // Calculate time spent
+    const timeSpent = examStartTime ? Math.round((Date.now() - examStartTime) / 1000) : null;
+
     const newResults = { ...results };
     if (!newResults[currentExam.id]) newResults[currentExam.id] = { attempts: [], best: 0 };
-    newResults[currentExam.id].attempts.push({ score, total: shuffled.length, pct, date: new Date().toISOString() });
+    newResults[currentExam.id].attempts.push({
+      score,
+      total: shuffled.length,
+      pct,
+      date: new Date().toISOString(),
+      timeSpent
+    });
     if (pct > newResults[currentExam.id].best) newResults[currentExam.id].best = pct;
     saveResults(newResults);
   };
@@ -96,7 +170,7 @@ function PSMExamPlatform() {
           attempts.push({
             examId,
             examName: exam.name,
-            level: examId.startsWith('psm1') ? 'PSM I' : 'PSM II',
+            level: examId.toLowerCase().startsWith('psm1') ? 'PSM I' : 'PSM II',
             ...attempt
           });
         });
@@ -130,6 +204,7 @@ function PSMExamPlatform() {
               <th className="text-left py-3 px-4 text-gray-400 font-semibold text-sm">Level</th>
               <th className="text-center py-3 px-4 text-gray-400 font-semibold text-sm">Điểm</th>
               <th className="text-center py-3 px-4 text-gray-400 font-semibold text-sm">%</th>
+              <th className="text-center py-3 px-4 text-gray-400 font-semibold text-sm">Thời gian</th>
               <th className="text-center py-3 px-4 text-gray-400 font-semibold text-sm">Kết quả</th>
             </tr>
           </thead>
@@ -162,6 +237,9 @@ function PSMExamPlatform() {
                   }`}>
                     {attempt.pct}%
                   </span>
+                </td>
+                <td className="py-3 px-4 text-center text-gray-400 text-sm">
+                  {attempt.timeSpent ? formatTime(attempt.timeSpent) : '-'}
                 </td>
                 <td className="py-3 px-4 text-center">
                   {attempt.pct >= 85 ? (
@@ -311,7 +389,7 @@ function PSMExamPlatform() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-800 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-700 border-t-cyan-500 mb-4"></div>
           <div className="text-xl font-semibold text-gray-100">Đang tải...</div>
@@ -338,7 +416,7 @@ function PSMExamPlatform() {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
-            <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-700 hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer hover:border-cyan-500">
+            <div className="bg-gray-700/70 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-600 hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer hover:border-cyan-500">
               <div className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl mb-3 md:mb-4 mx-auto shadow-md">
                 <svg className="w-6 h-6 md:w-7 md:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -350,7 +428,7 @@ function PSMExamPlatform() {
               <div className="text-xs md:text-sm font-semibold text-gray-400 text-center">Bộ đề có sẵn</div>
             </div>
 
-            <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-700 hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer hover:border-green-500">
+            <div className="bg-gray-700/70 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-700 hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer hover:border-green-500">
               <div className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-3 md:mb-4 mx-auto shadow-md">
                 <svg className="w-6 h-6 md:w-7 md:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -360,7 +438,7 @@ function PSMExamPlatform() {
               <div className="text-xs md:text-sm font-semibold text-gray-400 text-center">Đã hoàn thành</div>
             </div>
 
-            <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-700 hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer hover:border-orange-500">
+            <div className="bg-gray-700/70 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-700 hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer hover:border-orange-500">
               <div className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl mb-3 md:mb-4 mx-auto shadow-md">
                 <svg className="w-6 h-6 md:w-7 md:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -370,7 +448,7 @@ function PSMExamPlatform() {
               <div className="text-xs md:text-sm font-semibold text-gray-400 text-center">Tổng lượt thi</div>
             </div>
 
-            <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-700 hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer hover:border-yellow-500">
+            <div className="bg-gray-700/70 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-700 hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer hover:border-yellow-500">
               <div className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-yellow-500 to-amber-500 rounded-2xl mb-3 md:mb-4 mx-auto shadow-md">
                 <svg className="w-6 h-6 md:w-7 md:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
@@ -382,7 +460,7 @@ function PSMExamPlatform() {
           </div>
 
           {/* Analytics */}
-          <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-700 mb-8">
+          <div className="bg-gray-700/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-700 mb-8">
             <h3 className="text-xl font-bold text-gray-100 mb-4 flex items-center gap-2">
               <svg className="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
@@ -394,7 +472,7 @@ function PSMExamPlatform() {
           </div>
 
           {/* History Table */}
-          <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-700 mb-8">
+          <div className="bg-gray-700/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-700 mb-8">
             <h3 className="text-xl font-bold text-gray-100 mb-4 flex items-center gap-2">
               <svg className="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -423,7 +501,7 @@ function PSMExamPlatform() {
                       key={exam.id}
                       className={`relative rounded-2xl md:rounded-3xl p-5 md:p-6 shadow-lg border transition-all duration-200 ${
                         hasData
-                          ? 'bg-gray-800/90 backdrop-blur-sm border-gray-700 hover:shadow-2xl hover:scale-105 hover:border-cyan-500 cursor-pointer'
+                          ? 'bg-gray-700/70 backdrop-blur-sm border-gray-700 hover:shadow-2xl hover:scale-105 hover:border-cyan-500 cursor-pointer'
                           : 'bg-gray-900/40 border-gray-800 opacity-60'
                       }`}
                       onClick={() => hasData && startExam(exam)}
@@ -471,7 +549,7 @@ function PSMExamPlatform() {
   const progressPercentage = submitted ? (score / shuffled.length * 100) : (answeredCount / shuffled.length * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800 pb-8">
+    <div className="min-h-screen bg-gray-800 pb-8">
       {/* Fixed Header - Compact Design */}
       <div className="sticky top-0 z-50 bg-gray-800/95 backdrop-blur-md shadow-xl border-b border-gray-700">
         <div className="max-w-4xl mx-auto px-4 py-3">
@@ -498,6 +576,24 @@ function PSMExamPlatform() {
                 </p>
               </div>
             </div>
+
+            {/* Timer Display */}
+            {!submitted && timeRemaining !== null && (
+              <div className={`flex-shrink-0 px-4 py-2 rounded-lg font-bold text-sm shadow-md ${
+                timeRemaining <= 300
+                  ? 'bg-red-900/50 text-red-300 border border-red-600 animate-pulse'
+                  : timeRemaining <= 600
+                  ? 'bg-orange-900/50 text-orange-300 border border-orange-600'
+                  : 'bg-gray-700/80 text-gray-200 border border-gray-600'
+              }`}>
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>{formatTime(timeRemaining)}</span>
+                </div>
+              </div>
+            )}
 
             {/* Right: Action Button */}
             {!submitted ? (
@@ -565,17 +661,62 @@ function PSMExamPlatform() {
           </div>
         )}
 
+        {/* Bookmark Filter */}
+        {getBookmarkedQuestions().length > 0 && (
+          <div className="mb-6">
+            <button
+              onClick={() => {
+                setShowOnlyBookmarked(!showOnlyBookmarked);
+                if (!showOnlyBookmarked && getBookmarkedQuestions().length > 0) {
+                  // Jump to first bookmarked question
+                  const firstBookmarked = shuffled.findIndex(q => bookmarks[q.id]);
+                  if (firstBookmarked !== -1) setCurrentQ(firstBookmarked);
+                }
+              }}
+              className={`w-full px-4 py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center gap-2 ${
+                showOnlyBookmarked
+                  ? 'bg-yellow-500 text-white hover:bg-yellow-600 shadow-lg'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600 border border-gray-600'
+              }`}
+            >
+              <svg className="w-5 h-5" fill={showOnlyBookmarked ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+              </svg>
+              {showOnlyBookmarked ? 'Đang xem câu đã đánh dấu' : `Xem ${getBookmarkedQuestions().length} câu đã đánh dấu`}
+              <span className="bg-white/20 px-2 py-0.5 rounded-lg text-sm">
+                {getBookmarkedQuestions().length}
+              </span>
+            </button>
+          </div>
+        )}
+
         {/* Question Card */}
-        <div className={`bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-6 border transition-all ${
+        <div className={`bg-gray-700/70 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-6 border transition-all ${
           submitted
             ? (isCorrect(q.id) ? 'border-green-500' : 'border-red-500')
             : 'border-gray-700'
         }`}>
           {/* Question Header */}
           <div className="flex justify-between items-start flex-wrap gap-3 mb-5">
-            <span className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-bold px-4 py-2 rounded-xl shadow-md">
-              Câu {currentQ + 1}/{shuffled.length}
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-bold px-4 py-2 rounded-xl shadow-md">
+                Câu {currentQ + 1}/{shuffled.length}
+              </span>
+              <button
+                onClick={() => toggleBookmark(q.id)}
+                className={`p-2 rounded-lg transition-all duration-200 ${
+                  bookmarks[q.id]
+                    ? 'bg-yellow-500 text-white hover:bg-yellow-600'
+                    : 'bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-yellow-500'
+                }`}
+                aria-label={bookmarks[q.id] ? 'Bỏ đánh dấu' : 'Đánh dấu câu khó'}
+                title={bookmarks[q.id] ? 'Bỏ đánh dấu' : 'Đánh dấu câu khó'}
+              >
+                <svg className="w-5 h-5" fill={bookmarks[q.id] ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg>
+              </button>
+            </div>
             <span className={`text-xs font-bold px-3 py-2 rounded-xl shadow-md ${
               q.type === 'single'
                 ? 'bg-gradient-to-r from-gray-600 to-gray-700 text-white'
@@ -613,7 +754,7 @@ function PSMExamPlatform() {
                   );
                 }
               } else if (sel) {
-                bg = 'bg-cyan-900/40 border-cyan-500';
+                bg = 'bg-blue-600/30 border-blue-400';
               }
 
               return (
@@ -684,8 +825,25 @@ function PSMExamPlatform() {
         {/* Navigation */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
           <button
-            onClick={() => setCurrentQ(Math.max(0, currentQ - 1))}
-            disabled={currentQ === 0}
+            onClick={() => {
+              if (!showOnlyBookmarked) {
+                setCurrentQ(Math.max(0, currentQ - 1));
+              } else {
+                const bookmarkedIndices = shuffled.map((q, i) => bookmarks[q.id] ? i : -1).filter(i => i !== -1);
+                const currentIdx = bookmarkedIndices.indexOf(currentQ);
+                if (currentIdx > 0) {
+                  setCurrentQ(bookmarkedIndices[currentIdx - 1]);
+                }
+              }
+            }}
+            disabled={
+              !showOnlyBookmarked
+                ? currentQ === 0
+                : (() => {
+                    const bookmarkedIndices = shuffled.map((q, i) => bookmarks[q.id] ? i : -1).filter(i => i !== -1);
+                    return bookmarkedIndices.indexOf(currentQ) === 0;
+                  })()
+            }
             className="w-full sm:w-auto px-5 py-3 bg-gray-700 rounded-xl shadow-lg font-bold text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-600 transition-all border border-gray-600 flex items-center justify-center gap-2"
             aria-label="Câu trước"
           >
@@ -697,15 +855,20 @@ function PSMExamPlatform() {
 
           {/* Question Grid */}
           <div className="flex flex-wrap gap-2 justify-center max-w-md">
-            {shuffled.map((_, i) => {
-              const isAnswered = answers[shuffled[i].id]?.length > 0;
+            {shuffled.map((q, i) => {
+              // Skip non-bookmarked questions when filter is active
+              if (showOnlyBookmarked && !bookmarks[q.id]) {
+                return null;
+              }
+
+              const isAnswered = answers[q.id]?.length > 0;
               const isCurrent = i === currentQ;
               let bgColor = 'bg-gray-700 hover:bg-gray-600';
 
               if (isCurrent) {
                 bgColor = 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg';
               } else if (submitted) {
-                bgColor = isCorrect(shuffled[i].id) ? 'bg-green-600' : 'bg-red-600';
+                bgColor = isCorrect(q.id) ? 'bg-green-600' : 'bg-red-600';
               } else if (isAnswered) {
                 bgColor = 'bg-cyan-700';
               }
@@ -714,7 +877,7 @@ function PSMExamPlatform() {
                 <button
                   key={i}
                   onClick={() => setCurrentQ(i)}
-                  className={`w-9 h-9 text-xs font-bold rounded-lg transition-all duration-200 hover:scale-110 ${bgColor} ${isCurrent ? 'text-white' : 'text-gray-300'}`}
+                  className={`w-9 h-9 text-xs font-bold rounded-lg transition-all duration-200 hover:scale-110 ${bgColor} ${isCurrent ? 'text-white' : 'text-gray-300'} ${bookmarks[q.id] ? 'ring-2 ring-yellow-500 ring-offset-2 ring-offset-gray-900' : ''}`}
                   aria-label={`Đi đến câu ${i + 1}`}
                   aria-current={isCurrent ? 'true' : undefined}
                 >
@@ -725,8 +888,25 @@ function PSMExamPlatform() {
           </div>
 
           <button
-            onClick={() => setCurrentQ(Math.min(shuffled.length - 1, currentQ + 1))}
-            disabled={currentQ === shuffled.length - 1}
+            onClick={() => {
+              if (!showOnlyBookmarked) {
+                setCurrentQ(Math.min(shuffled.length - 1, currentQ + 1));
+              } else {
+                const bookmarkedIndices = shuffled.map((q, i) => bookmarks[q.id] ? i : -1).filter(i => i !== -1);
+                const currentIdx = bookmarkedIndices.indexOf(currentQ);
+                if (currentIdx < bookmarkedIndices.length - 1) {
+                  setCurrentQ(bookmarkedIndices[currentIdx + 1]);
+                }
+              }
+            }}
+            disabled={
+              !showOnlyBookmarked
+                ? currentQ === shuffled.length - 1
+                : (() => {
+                    const bookmarkedIndices = shuffled.map((q, i) => bookmarks[q.id] ? i : -1).filter(i => i !== -1);
+                    return bookmarkedIndices.indexOf(currentQ) === bookmarkedIndices.length - 1;
+                  })()
+            }
             className="w-full sm:w-auto px-5 py-3 bg-gray-700 rounded-xl shadow-lg font-bold text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-600 transition-all border border-gray-600 flex items-center justify-center gap-2"
             aria-label="Câu sau"
           >
