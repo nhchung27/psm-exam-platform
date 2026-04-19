@@ -1068,14 +1068,14 @@
             document.getElementById('progressBarFill').style.width = percent + '%';
         }
 
-        // Find current week (first uncompleted session)
+        // Find current week (first uncompleted session, or last week when all done)
         function getCurrentWeek() {
             for (let w = 0; w < weeksData.length; w++) {
                 for (let s of weeksData[w].sessions) {
                     if (!sessionState[s.num]) return w;
                 }
             }
-            return 0;
+            return weeksData.length - 1;
         }
 
         // Render hero section
@@ -1088,8 +1088,8 @@
 
             const heroSessions = week.sessions.map(session => {
                 const isChecked = sessionState[session.num];
-                const isFirstUncompleted = !sessionState[session.num] &&
-                    week.sessions[0].num === session.num;
+                const firstUncompletedNum = week.sessions.find(s => !sessionState[s.num])?.num;
+                const isFirstUncompleted = session.num === firstUncompletedNum;
 
                 return `
                     <div class="session-card ${isChecked ? 'checked' : ''} ${isFirstUncompleted ? 'current' : ''}">
