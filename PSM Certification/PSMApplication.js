@@ -1,4 +1,6 @@
-const { useState, useEffect, useMemo } = React;
+const { useState, useEffect, useRef, useMemo } = React;
+
+const PASS_THRESHOLD = 85;
 
 function PSMExamPlatform() {
   const [view, setView] = useState('dashboard');
@@ -17,17 +19,17 @@ function PSMExamPlatform() {
   const [examStartTime, setExamStartTime] = useState(null);
 
   useEffect(() => {
-    const savedNotes = localStorage.getItem('psm-notes');
-    const savedResults = localStorage.getItem('psm-results');
-    const savedBookmarks = localStorage.getItem('psm-bookmarks');
-    if (savedNotes) {
-      setNotes(JSON.parse(savedNotes));
-    }
-    if (savedResults) {
-      setResults(JSON.parse(savedResults));
-    }
-    if (savedBookmarks) {
-      setBookmarks(JSON.parse(savedBookmarks));
+    try {
+      const savedNotes = localStorage.getItem('psm-notes');
+      const savedResults = localStorage.getItem('psm-results');
+      const savedBookmarks = localStorage.getItem('psm-bookmarks');
+      if (savedNotes) setNotes(JSON.parse(savedNotes));
+      if (savedResults) setResults(JSON.parse(savedResults));
+      if (savedBookmarks) setBookmarks(JSON.parse(savedBookmarks));
+    } catch (e) {
+      localStorage.removeItem('psm-notes');
+      localStorage.removeItem('psm-results');
+      localStorage.removeItem('psm-bookmarks');
     }
     setLoading(false);
   }, []);
@@ -44,15 +46,16 @@ function PSMExamPlatform() {
     localStorage.setItem('psm-bookmarks', JSON.stringify(bookmarks));
   }, [bookmarks]);
 
-  // Timer countdown effect
+  const submittedRef = useRef(submitted);
+  useEffect(() => { submittedRef.current = submitted; }, [submitted]);
+
   useEffect(() => {
     if (timeRemaining === null || submitted || view !== 'exam') return;
 
     const timer = setInterval(() => {
       setTimeRemaining(prev => {
         if (prev <= 1) {
-          // Auto-submit when time runs out
-          setSubmitted(true);
+          if (!submittedRef.current) setSubmitted(true);
           return 0;
         }
         return prev - 1;
@@ -60,7 +63,7 @@ function PSMExamPlatform() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [submitted, view]);
+  }, [submitted, view, timeRemaining]);
 
   const saveResults = (newResults) => {
     setResults(newResults);
@@ -77,13 +80,6 @@ function PSMExamPlatform() {
     setCurrentQ(0);
     setShowOnlyBookmarked(false);
     setView('exam');
-
-    // Reset bookmarks for this exam's questions
-    const updatedBookmarks = { ...bookmarks };
-    shuffledQuestions.forEach(q => {
-      delete updatedBookmarks[q.id];
-    });
-    setBookmarks(updatedBookmarks);
 
     // Set timer based on exam type
     // PSM I: 60 minutes, PSM II: 90 minutes
@@ -233,7 +229,7 @@ function PSMExamPlatform() {
                 </td>
                 <td className="py-3 px-4 text-center">
                   <span className={`font-bold text-sm ${
-                    attempt.pct >= 85 ? 'text-green-400' : attempt.pct >= 70 ? 'text-yellow-400' : 'text-red-400'
+                    attempt.pct >= PASS_THRESHOLD ? 'text-green-400' : attempt.pct >= 70 ? 'text-yellow-400' : 'text-red-400'
                   }`}>
                     {attempt.pct}%
                   </span>
@@ -242,7 +238,7 @@ function PSMExamPlatform() {
                   {attempt.timeSpent ? formatTime(attempt.timeSpent) : '-'}
                 </td>
                 <td className="py-3 px-4 text-center">
-                  {attempt.pct >= 85 ? (
+                  {attempt.pct >= PASS_THRESHOLD ? (
                     <span className="inline-flex items-center gap-1 text-green-400 text-sm">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -286,7 +282,7 @@ function PSMExamPlatform() {
     const psm2Attempts = attempts.filter(a => a.level === 'PSM II');
 
     const getAvgScore = (arr) => arr.length > 0 ? Math.round(arr.reduce((sum, a) => sum + a.pct, 0) / arr.length) : 0;
-    const getPassRate = (arr) => arr.length > 0 ? Math.round(arr.filter(a => a.pct >= 85).length / arr.length * 100) : 0;
+    const getPassRate = (arr) => arr.length > 0 ? Math.round(arr.filter(a => a.pct >= PASS_THRESHOLD).length / arr.length * 100) : 0;
     const getBestScore = (arr) => arr.length > 0 ? Math.max(...arr.map(a => a.pct)) : 0;
     const getRecentTrend = (arr) => {
       if (arr.length < 3) return 'neutral';
@@ -507,7 +503,7 @@ function PSMExamPlatform() {
                       onClick={() => hasData && startExam(exam)}
                       role={hasData ? "button" : undefined}
                       tabIndex={hasData ? 0 : undefined}
-                      onKeyPress={(e) => hasData && e.key === 'Enter' && startExam(exam)}
+                      onKeyDown={(e) => hasData && e.key === 'Enter' && startExam(exam)}
                     >
                       <div className="flex justify-between items-start mb-3">
                         <h4 className="font-bold text-base md:text-lg text-gray-100">{exam.name}</h4>
@@ -543,6 +539,7 @@ function PSMExamPlatform() {
   }
 
   // Exam View
+  if (!shuffled) return null;
   const q = shuffled[currentQ];
   const score = submitted ? shuffled.filter(x => isCorrect(x.id)).length : 0;
   const answeredCount = Object.keys(answers).filter(k => answers[k]?.length > 0).length;
@@ -620,7 +617,7 @@ function PSMExamPlatform() {
             <div
               className={`h-full transition-all duration-300 ${
                 submitted
-                  ? (score/shuffled.length >= 0.85 ? 'bg-gradient-to-r from-green-500 to-emerald-600' : 'bg-gradient-to-r from-red-500 to-red-600')
+                  ? (score/shuffled.length >= PASS_THRESHOLD / 100 ? 'bg-gradient-to-r from-green-500 to-emerald-600' : 'bg-gradient-to-r from-red-500 to-red-600')
                   : 'bg-gradient-to-r from-cyan-500 to-blue-600'
               }`}
               style={{ width: `${progressPercentage}%` }}
@@ -637,12 +634,12 @@ function PSMExamPlatform() {
         {/* Result Summary */}
         {submitted && (
           <div className={`rounded-2xl p-6 mb-6 text-center shadow-xl border ${
-            score/shuffled.length >= 0.85
+            score/shuffled.length >= PASS_THRESHOLD / 100
               ? 'bg-green-900/30 border-green-600'
               : 'bg-orange-900/30 border-orange-600'
           }`}>
             <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-gray-800 rounded-2xl shadow-lg">
-              {score/shuffled.length >= 0.85 ? (
+              {score/shuffled.length >= PASS_THRESHOLD / 100 ? (
                 <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
@@ -656,7 +653,7 @@ function PSMExamPlatform() {
               {score}/{shuffled.length} <span className="text-gray-400">({Math.round(score/shuffled.length*100)}%)</span>
             </p>
             <p className="text-sm font-semibold text-gray-300">
-              {score/shuffled.length >= 0.85 ? 'Tuyệt vời! Bạn đã sẵn sàng! 🎉' : 'Cần ôn tập thêm. Mục tiêu: 85% 📚'}
+              {score/shuffled.length >= PASS_THRESHOLD / 100 ? 'Tuyệt vời! Bạn đã sẵn sàng! 🎉' : 'Cần ôn tập thêm. Mục tiêu: 85% 📚'}
             </p>
           </div>
         )}

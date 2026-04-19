@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISTQB CTFL v4.0.1 Flashcards - Bilingual</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0F172A;
+            --surface: #1E293B;
+            --surface-2: #334155;
+            --primary: #0D9488;
+            --primary-hover: #0F766E;
+            --primary-muted: rgba(13, 148, 136, 0.15);
+            --text: #F1F5F9;
+            --muted: #94A3B8;
+            --accent: #F59E0B;
+            --success: #10B981;
+            --success-muted: rgba(16, 185, 129, 0.15);
+            --border: rgba(148, 163, 184, 0.12);
+            --glass: rgba(30, 41, 59, 0.75);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(13, 148, 136, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
+            min-height: 100vh;
+            padding: 24px 16px 40px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        /* ── HEADER ── */
+        header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--primary-muted);
+            color: var(--primary);
+            border: 1px solid rgba(13, 148, 136, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        /* ── CARD PANEL ── */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        /* ── PROGRESS ── */
+        .progress-section {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .progress-text-block {
+            flex-shrink: 0;
+        }
+
+        #progressText {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        #statsText {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .progress-bar-wrap {
+            flex: 1;
+            height: 6px;
+            background: var(--surface-2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #14B8A6);
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 3px;
+        }
+
+        /* ── STATS PANEL ── */
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-box {
+            padding: 16px 20px;
+            text-align: center;
+            border-right: 1px solid var(--border);
+        }
+
+        .stat-box:last-child {
+            border-right: none;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        #knownCount { color: var(--success); }
+        #progressPercent { color: var(--primary); }
+
+        /* ── FILTER ── */
+        .filter-section {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .filter-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .filter-btn {
+            padding: 5px 12px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--muted);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: rgba(13, 148, 136, 0.4);
+            color: var(--primary);
+            background: var(--primary-muted);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* ── CARD AREA ── */
+        .card-section {
+            padding: 32px 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+
+        /* ── FLIP CARD ── */
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            max-width: 520px;
+            height: 380px;
+            perspective: 1200px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 28px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .flip-card-front {
+            background: var(--surface-2);
+            color: var(--text);
+        }
+
+        .flip-card.known .flip-card-front {
+            background: var(--surface-2);
+            border-color: rgba(16, 185, 129, 0.4);
+            box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2), inset 0 0 60px rgba(16, 185, 129, 0.04);
+        }
+
+        .flip-card-back {
+            background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
+            color: #fff;
+            transform: rotateY(180deg);
+            border-color: rgba(13, 148, 136, 0.5);
+        }
+
+        /* Front content */
+        .flip-card-front-content {
+            width: 100%;
+        }
+
+        .flip-card-front-vietnamese {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+
+        .flip-card-front-english {
+            font-size: 15px;
+            font-style: italic;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .flip-card-front-number {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--primary-muted);
+            padding: 3px 10px;
+            border-radius: 10px;
+            letter-spacing: 0.05em;
+            margin-top: 10px;
+        }
+
+        .flip-card-front-hint {
+            font-size: 12px;
+            color: var(--muted);
+            font-style: italic;
+            margin-top: 20px;
+            opacity: 0.7;
+        }
+
+        /* Back content */
+        .flip-card-back-content {
+            text-align: left;
+            width: 100%;
+            font-size: 14px;
+            line-height: 1.65;
+            max-height: 100%;
+            overflow-y: auto;
+        }
+
+        .flip-card-back-content::-webkit-scrollbar { width: 4px; }
+        .flip-card-back-content::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+        .flip-card-back-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 2px; }
+
+        .flip-card-back-vietnamese {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .flip-card-back-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 10px 0;
+        }
+
+        .flip-card-back-english {
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .flip-card-back-example {
+            font-size: 12.5px;
+            color: rgba(255, 255, 255, 0.75);
+            font-style: italic;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .empty-state-icon {
+            font-size: 40px;
+            margin-bottom: 14px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 15px;
+            color: var(--muted);
+        }
+
+        /* ── CONTROLS ── */
+        .controls-section {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.3);
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+            border-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            border-color: #059669;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--muted);
+            border-color: var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-2);
+            color: var(--text);
+            border-color: rgba(148, 163, 184, 0.3);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            margin-top: 12px;
+            padding: 16px 20px;
+            text-align: center;
+        }
+
+        .shortcuts-guide {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .shortcut-key {
+            display: inline-block;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 1px 7px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'Inter', monospace;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 22px;
+            }
+
+            .flip-card {
+                height: 340px;
+            }
+
+            .flip-card-front, .flip-card-back {
+                padding: 20px;
+            }
+
+            .flip-card-front-vietnamese {
+                font-size: 20px;
+            }
+
+            .stats-panel {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .control-buttons, .nav-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .shortcuts-guide {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-badge">ISTQB CTFL v4.0.1</div>
+            <h1>Flashcards Bilingual</h1>
+            <p>Vietnamese + English · 90 Cards · 7 Chapters</p>
+        </header>
+
+        <div class="panel">
+            <div class="progress-section">
+                <div class="progress-text-block">
+                    <div id="progressText">Card 1 of 90</div>
+                    <div id="statsText">Known: 0 | Learning: 90</div>
+                </div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+            </div>
+
+            <div class="stats-panel">
+                <div class="stat-box">
+                    <div class="stat-label">Known</div>
+                    <div class="stat-value" id="knownCount">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Learning</div>
+                    <div class="stat-value" id="learningCount">90</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Progress</div>
+                    <div class="stat-value" id="progressPercent">0%</div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <label class="filter-label">Filter by Chapter</label>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All (90)</button>
+                    <button class="filter-btn" data-filter="ch1">Ch1: Fundamentals (19)</button>
+                    <button class="filter-btn" data-filter="ch2">Ch2: SDLC (14)</button>
+                    <button class="filter-btn" data-filter="ch3">Ch3: Static Testing (7)</button>
+                    <button class="filter-btn" data-filter="ch4">Ch4: Test Design (14)</button>
+                    <button class="filter-btn" data-filter="ch5">Ch5: Test Management (17)</button>
+                    <button class="filter-btn" data-filter="ch6">Ch6: Tools (5)</button>
+                    <button class="filter-btn" data-filter="extra">Extra Concepts (14)</button>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <div class="flip-card" id="flipCard">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="flip-card-front-content">
+                                <div class="flip-card-front-vietnamese" id="cardFrontVietnamese">Loading...</div>
+                                <div class="flip-card-front-english" id="cardFrontEnglish">Loading...</div>
+                                <div class="flip-card-front-number" id="cardNumber"></div>
+                            </div>
+                            <div class="flip-card-front-hint">Click to reveal answer · Space to flip</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="flip-card-back-content">
+                                <div class="flip-card-back-vietnamese" id="cardBackVietnamese"></div>
+                                <div class="flip-card-back-divider"></div>
+                                <div class="flip-card-back-english" id="cardBackEnglish"></div>
+                                <div class="flip-card-back-divider"></div>
+                                <div class="flip-card-back-example" id="cardBackExample"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls-section">
+                <div class="control-buttons">
+                    <button class="btn btn-success" id="knownBtn" title="Mark as known (K)">✓ Known</button>
+                    <button class="btn btn-secondary" id="learningBtn" title="Mark as learning (L)">↩ Learning</button>
+                    <button class="btn btn-secondary" id="shuffleBtn" title="Shuffle cards (S)">⇌ Shuffle</button>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-primary" id="prevBtn" title="Previous card (←)">← Previous</button>
+                    <button class="btn btn-primary" id="nextBtn" title="Next card (→)">Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="shortcuts-guide">
+                <div><span class="shortcut-key">Space</span> Flip card</div>
+                <div><span class="shortcut-key">→</span> Next · <span class="shortcut-key">←</span> Prev</div>
+                <div><span class="shortcut-key">K</span> Known · <span class="shortcut-key">L</span> Learning</div>
+                <div><span class="shortcut-key">S</span> Shuffle</div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Flashcard Data - Bilingual format
+        const flashcards = [
+            // Chapter 1 - Fundamentals
+            { id: 1, chapter: 'ch1', vietnamese: 'Kiểm thử phần mềm', english: 'Software Testing',
+              backVietnamese: 'Quá trình đánh giá sản phẩm phần mềm và các tài liệu liên quan nhằm phát hiện lỗi và đảm bảo chất lượng.',
+              backEnglish: 'The process of evaluating a software product and related documentation to find defects and ensure quality.' },
+            { id: 2, chapter: 'ch1', vietnamese: 'Lỗi', english: 'Error',
+              backVietnamese: 'Hành động của con người tạo ra kết quả sai. Là nguồn gốc ban đầu dẫn đến defect.',
+              backEnglish: 'A human action that produces an incorrect result. The root cause that leads to a defect.' },
+            { id: 3, chapter: 'ch1', vietnamese: 'Khiếm khuyết', english: 'Defect / Bug',
+              backVietnamese: 'Lỗi tồn tại trong sản phẩm phần mềm, chưa được phát hiện/sửa. Do error tạo ra.',
+              backEnglish: 'An imperfection or deficiency in a work product that may cause it to fail to meet requirements. Caused by a human error.' },
+            { id: 4, chapter: 'ch1', vietnamese: 'Sự cố', english: 'Failure',
+              backVietnamese: 'Khi phần mềm thực thi không đúng với kỳ vọng trong môi trường thực tế. Có thể do defect gây ra.',
+              backEnglish: 'An event in which a component or system does not perform a required function within specified limits. May be caused by a defect.',
+              example: 'VD: App crash khi submit form → Failure. Dòng code sai gây crash → Defect.' },
+            { id: 5, chapter: 'ch1', vietnamese: 'Kiểm thử tĩnh', english: 'Static Testing',
+              backVietnamese: 'Kiểm thử KHÔNG thực thi code. Bao gồm review tài liệu, phân tích code tĩnh bằng tool.',
+              backEnglish: 'Testing that does not involve the execution of code. Includes reviews and static analysis.' },
+            { id: 6, chapter: 'ch1', vietnamese: 'Kiểm thử động', english: 'Dynamic Testing',
+              backVietnamese: 'Kiểm thử bằng cách THỰC THI code/phần mềm và quan sát kết quả.',
+              backEnglish: 'Testing that involves the execution of the software being tested.' },
+            { id: 7, chapter: 'ch1', vietnamese: 'Xác nhận hợp lệ', english: 'Validation',
+              backVietnamese: 'Kiểm tra xem sản phẩm có đáp ứng nhu cầu thực tế của người dùng không. "Chúng ta có xây đúng sản phẩm không?"',
+              backEnglish: 'Confirmation that a product meets the needs of its stakeholders. "Are we building the right product?"' },
+            { id: 8, chapter: 'ch1', vietnamese: 'Xác minh', english: 'Verification',
+              backVietnamese: 'Kiểm tra xem sản phẩm có được xây đúng theo spec/requirement không. "Chúng ta có xây sản phẩm đúng cách không?"',
+              backEnglish: 'Confirmation that a work product meets its specified requirements. "Are we building the product right?"' },
+            { id: 9, chapter: 'ch1', vietnamese: '7 Nguyên tắc Kiểm thử', english: '7 Testing Principles',
+              backVietnamese: '1. Kiểm thử chứng minh có lỗi 2. Không thể test toàn bộ 3. Test sớm tiết kiệm chi phí 4. Lỗi tập trung 5. Nghịch lý thuốc trừ sâu 6. Kiểm thử phụ thuộc ngữ cảnh 7. Fallacy: không có lỗi ≠ sản phẩm tốt',
+              backEnglish: '1. Testing shows presence of defects 2. Exhaustive testing is impossible 3. Early testing saves time and money 4. Defect clustering 5. Pesticide paradox 6. Testing is context-dependent 7. Absence-of-errors fallacy' },
+            { id: 10, chapter: 'ch1', vietnamese: 'Nghịch lý thuốc trừ sâu', english: 'Pesticide Paradox',
+              backVietnamese: 'Nếu cùng một bộ test được lặp lại nhiều lần, sẽ không tìm thêm được defect mới. Cần thường xuyên cập nhật và thêm test mới.',
+              backEnglish: 'If the same tests are repeated over and over, they will no longer find new bugs. Tests need to be regularly reviewed and updated.' },
+            { id: 11, chapter: 'ch1', vietnamese: 'Test case', english: 'Test Case',
+              backVietnamese: 'Tập hợp điều kiện đầu vào, điều kiện tiên quyết, các bước thực hiện và kết quả mong đợi để kiểm thử một tính năng.',
+              backEnglish: 'A set of preconditions, inputs, actions, expected results and postconditions developed for a particular test objective.' },
+            { id: 12, chapter: 'ch1', vietnamese: 'Test suite', english: 'Test Suite',
+              backVietnamese: 'Tập hợp các test case liên quan được nhóm lại để thực thi cùng nhau.',
+              backEnglish: 'A set of test cases or test procedures to be executed in a specific test cycle.' },
+            { id: 13, chapter: 'ch1', vietnamese: 'Test basis', english: 'Test Basis',
+              backVietnamese: 'Tất cả tài liệu được dùng để phân tích và thiết kế test case (requirements, design docs, user stories, code...).',
+              backEnglish: 'All documents from which the requirements of a component or system can be inferred, used as a basis for test analysis and design.' },
+            { id: 14, chapter: 'ch1', vietnamese: 'Test condition', english: 'Test Condition',
+              backVietnamese: 'Một khía cạnh cụ thể của test object có thể được kiểm thử. Ví dụ: một business rule, một trường input.',
+              backEnglish: 'A testable aspect of a component or system identified as a basis for testing.',
+              example: 'VD: "Trường email phải validate đúng định dạng" là một test condition.' },
+            { id: 15, chapter: 'ch1', vietnamese: 'Test oracle', english: 'Test Oracle',
+              backVietnamese: 'Nguồn dùng để xác định kết quả mong đợi của test. Có thể là spec, user manual, kinh nghiệm chuyên gia.',
+              backEnglish: 'A source to determine expected results to compare with the actual results of the system under test.' },
+            { id: 16, chapter: 'ch1', vietnamese: 'Testware', english: 'Testware',
+              backVietnamese: 'Tất cả sản phẩm được tạo ra trong quá trình kiểm thử: test plan, test case, test data, test scripts, defect reports...',
+              backEnglish: 'Artifacts produced during the test process, including test plans, test cases, test data, test scripts, and defect reports.' },
+            { id: 17, chapter: 'ch1', vietnamese: 'Test object', english: 'Test Object',
+              backVietnamese: 'Thành phần hoặc hệ thống đang được kiểm thử.',
+              backEnglish: 'The work product to be tested.' },
+            { id: 18, chapter: 'ch1', vietnamese: 'Traceability', english: 'Traceability',
+              backVietnamese: 'Khả năng liên kết các test artifact với test basis và ngược lại. Ví dụ: test case ↔ requirement.',
+              backEnglish: 'The degree to which a relationship can be established between two or more work products.' },
+            { id: 19, chapter: 'ch1', vietnamese: 'Whole-team approach', english: 'Whole-team approach',
+              backVietnamese: 'Mọi thành viên trong team (dev, tester, BA, PO...) đều có trách nhiệm về chất lượng sản phẩm.',
+              backEnglish: 'An approach where all team members share responsibility for quality.' },
+
+            // Chapter 2 - SDLC
+            { id: 20, chapter: 'ch2', vietnamese: 'Kiểm thử thành phần', english: 'Component Testing',
+              backVietnamese: 'Kiểm thử từng unit/module riêng lẻ, thường do developer thực hiện với unit test framework.',
+              backEnglish: 'Testing of individual hardware or software components. Also called unit testing.' },
+            { id: 21, chapter: 'ch2', vietnamese: 'Kiểm thử tích hợp thành phần', english: 'Component Integration Testing',
+              backVietnamese: 'Kiểm thử giao tiếp và tương tác giữa các component với nhau sau khi component testing.',
+              backEnglish: 'Testing performed to expose defects in the interfaces and interactions between integrated components.' },
+            { id: 22, chapter: 'ch2', vietnamese: 'Kiểm thử hệ thống', english: 'System Testing',
+              backVietnamese: 'Kiểm thử toàn bộ hệ thống đã tích hợp như một thể thống nhất. Thường do independent test team thực hiện.',
+              backEnglish: 'Testing an integrated system to verify that it meets specified requirements.' },
+            { id: 23, chapter: 'ch2', vietnamese: 'Kiểm thử tích hợp hệ thống', english: 'System Integration Testing',
+              backVietnamese: 'Kiểm thử tích hợp và tương tác giữa hệ thống này với các hệ thống khác (external APIs, third-party services...).',
+              backEnglish: 'Testing the interfaces and interactions between systems.' },
+            { id: 24, chapter: 'ch2', vietnamese: 'Kiểm thử chấp nhận', english: 'Acceptance Testing',
+              backVietnamese: 'Kiểm thử chính thức để xác nhận hệ thống đáp ứng yêu cầu nghiệp vụ. Thường do user/stakeholder thực hiện.',
+              backEnglish: 'Testing performed to determine whether a system satisfies its acceptance criteria and enables users to determine system acceptance.' },
+            { id: 25, chapter: 'ch2', vietnamese: 'UAT', english: 'User Acceptance Testing',
+              backVietnamese: 'Người dùng thực tế kiểm thử để xác nhận hệ thống phù hợp với công việc hàng ngày của họ.',
+              backEnglish: 'Acceptance testing performed by intended users of the system.' },
+            { id: 26, chapter: 'ch2', vietnamese: 'Alpha Testing', english: 'Alpha Testing',
+              backVietnamese: 'Kiểm thử tại môi trường của nhà phát triển trước khi release. Do internal users hoặc khách hàng được chọn thực hiện.',
+              backEnglish: 'Simulated or actual operational testing by potential users/customers at the developer\'s site.' },
+            { id: 27, chapter: 'ch2', vietnamese: 'Beta Testing', english: 'Beta Testing',
+              backVietnamese: 'Kiểm thử tại môi trường thực tế của end user trước khi release chính thức rộng rãi.',
+              backEnglish: 'Testing performed by potential customers at their own locations before the software is released.' },
+            { id: 28, chapter: 'ch2', vietnamese: 'Kiểm thử chức năng', english: 'Functional Testing',
+              backVietnamese: 'Kiểm thử "what the system does" — các tính năng theo specification. Dùng black-box techniques.',
+              backEnglish: 'Testing performed to evaluate if a component or system satisfies functional requirements.' },
+            { id: 29, chapter: 'ch2', vietnamese: 'Kiểm thử phi chức năng', english: 'Non-functional Testing',
+              backVietnamese: 'Kiểm thử "how the system performs" — hiệu năng, bảo mật, khả năng sử dụng, độ tin cậy...',
+              backEnglish: 'Testing performed to evaluate non-functional attributes such as performance, security, usability, reliability.' },
+            { id: 30, chapter: 'ch2', vietnamese: 'Kiểm thử hồi quy', english: 'Regression Testing',
+              backVietnamese: 'Kiểm thử lại sau khi thay đổi code để đảm bảo không có defect mới được tạo ra (không bị ảnh hưởng bởi thay đổi).',
+              backEnglish: 'Testing of a previously tested program following modification to ensure that defects have not been introduced or uncovered.' },
+            { id: 31, chapter: 'ch2', vietnamese: 'Kiểm thử xác nhận', english: 'Confirmation Testing',
+              backVietnamese: 'Kiểm thử lại sau khi fix bug để xác nhận defect đã được sửa thành công.',
+              backEnglish: 'Testing that runs test cases that previously failed to confirm that a defect has been fixed.' },
+            { id: 32, chapter: 'ch2', vietnamese: 'Shift-Left Testing', english: 'Shift-Left Testing',
+              backVietnamese: 'Bắt đầu kiểm thử sớm hơn trong SDLC, không đợi đến giai đoạn cuối. Giúp phát hiện lỗi sớm hơn, tiết kiệm chi phí.',
+              backEnglish: 'Moving testing to an earlier phase in the SDLC to find defects earlier and reduce cost of fixing them.' },
+            { id: 33, chapter: 'ch2', vietnamese: 'Kiểm thử bảo trì', english: 'Maintenance Testing',
+              backVietnamese: 'Kiểm thử hệ thống sau khi thay đổi (bug fix, upgrade, migration, tối ưu hóa). Bao gồm impact analysis.',
+              backEnglish: 'Testing the changes to an operational system or the impact of changed environment on an operational system.' },
+
+            // Chapter 3 - Static Testing
+            { id: 34, chapter: 'ch3', vietnamese: 'Review', english: 'Review',
+              backVietnamese: 'Đánh giá sản phẩm (document, code) bởi một hoặc nhiều người nhằm phát hiện vấn đề và cải thiện chất lượng.',
+              backEnglish: 'A type of static testing in which a work product or process is evaluated by one or more individuals to detect defects or provide improvements.' },
+            { id: 35, chapter: 'ch3', vietnamese: 'Walkthrough', english: 'Walkthrough',
+              backVietnamese: 'Author dẫn dắt nhóm qua tài liệu theo từng bước. Mục tiêu chính: chia sẻ kiến thức và tìm lỗi nhỏ. Ít formal.',
+              backEnglish: 'A type of review in which an author leads members of the review through a work product and the reviewers ask questions and make comments.' },
+            { id: 36, chapter: 'ch3', vietnamese: 'Technical Review', english: 'Technical Review',
+              backVietnamese: 'Review kỹ thuật có cấu trúc do technical peer thực hiện. Mục tiêu: đánh giá chất lượng kỹ thuật và tuân thủ standards.',
+              backEnglish: 'A formal review by technical experts to evaluate technical content and identify technical defects.' },
+            { id: 37, chapter: 'ch3', vietnamese: 'Inspection', english: 'Inspection',
+              backVietnamese: 'Dạng review chính thức nhất. Có roles rõ ràng (moderator, author, reviewer...), checklist, và metrics được thu thập.',
+              backEnglish: 'A type of formal review to identify defects in a work product, which provides measurement to improve the review process and the work product.' },
+            { id: 38, chapter: 'ch3', vietnamese: 'Informal Review', english: 'Informal Review',
+              backVietnamese: 'Review không có quy trình chính thức, không có output bắt buộc. Nhanh, linh hoạt nhưng ít nhất quán.',
+              backEnglish: 'A type of review that does not follow a defined process and has no formal documented output.' },
+            { id: 39, chapter: 'ch3', vietnamese: 'Review Process', english: 'Review Process',
+              backVietnamese: 'Quy trình: Lập kế hoạch → Khởi động review → Review cá nhân → Communication & Analysis → Fix & Report',
+              backEnglish: 'Phases: Planning → Review Initiation → Individual Review → Issue Communication & Analysis → Fixing & Reporting' },
+            { id: 40, chapter: 'ch3', vietnamese: 'Phân tích tĩnh', english: 'Static Analysis',
+              backVietnamese: 'Phân tích code hoặc tài liệu bằng tool mà không thực thi code. Ví dụ: linters, SonarQube, code complexity tools.',
+              backEnglish: 'The examination of a work product performed without executing it, using automated tools.' },
+
+            // Chapter 4 - Test Design
+            { id: 41, chapter: 'ch4', vietnamese: 'Phân vùng tương đương', english: 'Equivalence Partitioning (EP)',
+              backVietnamese: 'Chia dữ liệu thành các nhóm (partition) được xử lý theo cùng một cách. Chỉ test một giá trị đại diện mỗi nhóm.',
+              backEnglish: 'A black-box test technique that divides data into partitions such that all members of a given partition are expected to be processed in the same way.',
+              example: 'VD: Age field → [<0: invalid] [0-17: minor] [18-60: adult] [>60: senior]. Test: -1, 10, 30, 65' },
+            { id: 42, chapter: 'ch4', vietnamese: 'Phân tích giá trị biên', english: 'Boundary Value Analysis (BVA)',
+              backVietnamese: 'Kiểm thử các giá trị tại ranh giới của partition, vì lỗi thường xảy ra ở biên. Bổ sung cho EP.',
+              backEnglish: 'A black-box test technique for designing test cases based on boundary values of partitions.',
+              example: 'VD: Valid range 18-60 → Test: 17, 18, 19, 59, 60, 61' },
+            { id: 43, chapter: 'ch4', vietnamese: '2-value BVA', english: '2-value BVA',
+              backVietnamese: 'Kiểm thử giá trị tại biên và giá trị ngay bên ngoài biên (chỉ 2 phía của mỗi ranh giới).',
+              backEnglish: 'BVA variant testing each boundary value and the value just outside each boundary (2 values per boundary).',
+              example: 'VD: Min=18 → test 17 và 18. Max=60 → test 60 và 61' },
+            { id: 44, chapter: 'ch4', vietnamese: '3-value BVA', english: '3-value BVA',
+              backVietnamese: 'Kiểm thử giá trị tại biên, ngay dưới biên, và ngay trên biên (3 giá trị cho mỗi ranh giới). Nghiêm ngặt hơn.',
+              backEnglish: 'BVA variant testing each boundary value and one value below and above each boundary (3 values per boundary). More thorough.',
+              example: 'VD: Min=18 → test 17, 18, 19. Max=60 → test 59, 60, 61' },
+            { id: 45, chapter: 'ch4', vietnamese: 'Decision Table Testing', english: 'Decision Table Testing',
+              backVietnamese: 'Kiểm thử các tổ hợp điều kiện → hành động. Tốt nhất cho business rules phức tạp với nhiều điều kiện kết hợp.',
+              backEnglish: 'A black-box test technique for testing combinations of conditions and the corresponding system behavior.',
+              example: 'VD: Login: [Username đúng/sai] × [Password đúng/sai] = 4 combinations cần test' },
+            { id: 46, chapter: 'ch4', vietnamese: 'State Transition Testing', english: 'State Transition Testing',
+              backVietnamese: 'Kiểm thử chuyển trạng thái của hệ thống. Dùng state diagram để thiết kế test cases bao phủ các state và transition.',
+              backEnglish: 'A black-box test technique for designing test cases based on the transition of the system between states.',
+              example: 'VD: ATM states: Idle → Card inserted → PIN entered → Transaction → Idle' },
+            { id: 47, chapter: 'ch4', vietnamese: 'Statement Coverage', english: 'Statement Coverage',
+              backVietnamese: '% câu lệnh code đã được thực thi bởi test suite. 100% = mọi dòng code được chạy qua ít nhất một lần.',
+              backEnglish: 'The percentage of executable statements in the code that have been exercised by test cases.' },
+            { id: 48, chapter: 'ch4', vietnamese: 'Branch Coverage', english: 'Branch Coverage',
+              backVietnamese: '% nhánh (true/false của mỗi điều kiện) đã được thực thi. Mạnh hơn statement coverage.',
+              backEnglish: 'The percentage of branches in the code that have been exercised by test cases. Stronger than statement coverage.',
+              example: 'VD: if(A && B) → Branch coverage test: A=true,B=true (true branch) và A=false (false branch)' },
+            { id: 49, chapter: 'ch4', vietnamese: 'Error Guessing', english: 'Error Guessing',
+              backVietnamese: 'Kỹ thuật dựa trên kinh nghiệm để đoán các lỗi phổ biến. Dùng error list hoặc fault attack approach.',
+              backEnglish: 'An experience-based test technique where the tester uses their experience to anticipate what defects might be present.' },
+            { id: 50, chapter: 'ch4', vietnamese: 'Exploratory Testing', english: 'Exploratory Testing',
+              backVietnamese: 'Học, thiết kế và thực thi test đồng thời trong một session có định hướng (charter). Phát hiện lỗi khó đoán trước.',
+              backEnglish: 'An approach to testing whereby the testers dynamically design and execute tests based on their knowledge, exploration of the test item, and the results of previous tests.' },
+            { id: 51, chapter: 'ch4', vietnamese: 'Checklist-based Testing', english: 'Checklist-based Testing',
+              backVietnamese: 'Test dựa trên checklist các điều cần kiểm tra. Tốt cho regression, compliance, và kiểm thử có kinh nghiệm.',
+              backEnglish: 'An experience-based test technique whereby the experienced tester uses a high-level checklist of items to be noted, checked, or remembered.' },
+            { id: 52, chapter: 'ch4', vietnamese: 'ATDD', english: 'Acceptance Test-Driven Development',
+              backVietnamese: 'Viết acceptance test TRƯỚC khi code. Collaboration giữa dev, tester, và BA để định nghĩa rõ behavior mong muốn.',
+              backEnglish: 'A collaborative approach in which acceptance tests are written before development starts, shared by devs, testers, and business.' },
+            { id: 53, chapter: 'ch4', vietnamese: 'BDD', english: 'Behavior-Driven Development',
+              backVietnamese: 'Mô tả behavior hệ thống bằng ngôn ngữ tự nhiên theo format Given-When-Then. Dùng Gherkin syntax.',
+              backEnglish: 'An approach to software development that combines TDD with domain-driven design using natural language scenarios.' },
+            { id: 54, chapter: 'ch4', vietnamese: 'Given-When-Then', english: 'Given-When-Then',
+              backVietnamese: 'Format mô tả test scenario trong BDD: Given (điều kiện ban đầu) - When (hành động) - Then (kết quả mong đợi).',
+              backEnglish: 'A format for writing BDD scenarios: Given (precondition) - When (action/trigger) - Then (expected outcome).',
+              example: 'VD: Given user is logged in / When they click Add to Cart / Then item appears in cart' },
+
+            // Chapter 5 - Test Management
+            { id: 55, chapter: 'ch5', vietnamese: 'Kế hoạch kiểm thử', english: 'Test Plan',
+              backVietnamese: 'Tài liệu mô tả phạm vi, cách tiếp cận, tài nguyên, lịch trình và mục tiêu của các hoạt động kiểm thử.',
+              backEnglish: 'A document describing the scope, approach, resources, and schedule of intended test activities.' },
+            { id: 56, chapter: 'ch5', vietnamese: 'Ước tính kiểm thử', english: 'Test Estimation',
+              backVietnamese: 'Dự đoán effort, thời gian và tài nguyên cần thiết cho các hoạt động kiểm thử trong dự án.',
+              backEnglish: 'An approximation of the effort, time, or resources needed for testing activities.' },
+            { id: 57, chapter: 'ch5', vietnamese: 'Ước tính dựa trên số liệu', english: 'Metric-based Estimation',
+              backVietnamese: 'Ước tính dựa trên dữ liệu lịch sử từ các dự án trước (defect rate, test execution rate, coverage achieved...).',
+              backEnglish: 'Estimating testing effort based on historical data from previous similar projects.' },
+            { id: 58, chapter: 'ch5', vietnamese: 'Ước tính dựa trên chuyên gia', english: 'Expert-based Estimation',
+              backVietnamese: 'Ước tính dựa trên kinh nghiệm chuyên gia. Kỹ thuật: Planning Poker, Wideband Delphi.',
+              backEnglish: 'Estimating testing effort based on expert experience, using techniques like Planning Poker or Wideband Delphi.' },
+            { id: 59, chapter: 'ch5', vietnamese: 'Kiểm thử dựa trên rủi ro', english: 'Risk-based Testing',
+              backVietnamese: 'Ưu tiên thiết kế và thực thi test dựa trên mức độ rủi ro (likelihood × impact). Test nhiều hơn ở vùng rủi ro cao.',
+              backEnglish: 'Testing prioritized and managed based on risk level (likelihood × impact) to reduce the overall level of product risk.' },
+            { id: 60, chapter: 'ch5', vietnamese: 'Rủi ro sản phẩm', english: 'Product Risk',
+              backVietnamese: 'Rủi ro liên quan đến chất lượng sản phẩm: tính năng lỗi, bảo mật kém, hiệu năng thấp, dữ liệu bị hỏng...',
+              backEnglish: 'A risk related to the quality of the test object, such as missing or wrong functionality, security vulnerabilities, or data loss.' },
+            { id: 61, chapter: 'ch5', vietnamese: 'Rủi ro dự án', english: 'Project Risk',
+              backVietnamese: 'Rủi ro liên quan đến việc quản lý và thực hiện dự án: thiếu nguồn lực, thay đổi requirement, deadline trễ...',
+              backEnglish: 'A risk related to the management and control of the project, such as lack of resources, schedule delays, or changing requirements.' },
+            { id: 62, chapter: 'ch5', vietnamese: 'Likelihood rủi ro', english: 'Risk Likelihood',
+              backVietnamese: 'Xác suất mà một rủi ro sẽ xảy ra. Một trong hai yếu tố tính mức độ rủi ro.',
+              backEnglish: 'The probability that a risk will occur. One of two factors used to calculate risk level.' },
+            { id: 63, chapter: 'ch5', vietnamese: 'Impact rủi ro', english: 'Risk Impact',
+              backVietnamese: 'Hậu quả nếu rủi ro xảy ra (tài chính, uy tín, an toàn...). Một trong hai yếu tố tính mức độ rủi ro.',
+              backEnglish: 'The consequence if a risk occurs (financial, reputational, safety...). One of two factors used to calculate risk level.' },
+            { id: 64, chapter: 'ch5', vietnamese: 'Giám sát kiểm thử', english: 'Test Monitoring',
+              backVietnamese: 'Thu thập thông tin và so sánh tiến độ kiểm thử thực tế với kế hoạch. Cơ sở để đưa ra Test Control.',
+              backEnglish: 'Collecting information about testing activities, comparing planned vs actual results, and reporting.' },
+            { id: 65, chapter: 'ch5', vietnamese: 'Kiểm soát kiểm thử', english: 'Test Control',
+              backVietnamese: 'Điều chỉnh các hoạt động kiểm thử khi phát hiện lệch so với kế hoạch. Phản ứng với kết quả test monitoring.',
+              backEnglish: 'Taking corrective actions based on information and metrics collected during test monitoring.' },
+            { id: 66, chapter: 'ch5', vietnamese: 'Tiêu chí kết thúc', english: 'Test Completion Criteria',
+              backVietnamese: 'Các điều kiện được xác định trước phải đáp ứng để kết thúc kiểm thử chính thức. Ví dụ: 95% test case pass, không có critical bug.',
+              backEnglish: 'The conditions that determine whether a test level or task is complete and testing can end.' },
+            { id: 67, chapter: 'ch5', vietnamese: 'Báo cáo lỗi', english: 'Defect Report',
+              backVietnamese: 'Tài liệu mô tả defect được tìm thấy: tiêu đề, steps to reproduce, môi trường, severity, priority, ảnh/video...',
+              backEnglish: 'A document recording the details of any defect that occurred during testing.' },
+            { id: 68, chapter: 'ch5', vietnamese: 'Độ nghiêm trọng', english: 'Defect Severity',
+              backVietnamese: 'Mức độ ảnh hưởng kỹ thuật của defect lên hệ thống (Critical, Major, Minor, Trivial). Do tester đánh giá.',
+              backEnglish: 'The degree of impact that a defect has on the development or operation of a component or system. Assigned by tester.' },
+            { id: 69, chapter: 'ch5', vietnamese: 'Độ ưu tiên', english: 'Defect Priority',
+              backVietnamese: 'Mức độ cần xử lý khẩn cấp từ góc độ nghiệp vụ (High, Medium, Low). Do Product Owner/manager đánh giá.',
+              backEnglish: 'The level of importance assigned to a defect for it to be resolved. Assigned by business/management.',
+              example: 'VD: Logo hiển thị sai có severity thấp nhưng priority cao nếu là trang chủ.' },
+            { id: 70, chapter: 'ch5', vietnamese: 'Quản lý cấu hình', english: 'Configuration Management',
+              backVietnamese: 'Quản lý các version của testware và test object, đảm bảo traceability và reproducibility của test.',
+              backEnglish: 'A discipline applying technical and administrative direction to identify and document the functional and physical characteristics of a work product.' },
+            { id: 71, chapter: 'ch5', vietnamese: 'Test metrics', english: 'Test Metrics',
+              backVietnamese: 'Số đo để đánh giá tiến độ và chất lượng kiểm thử: test coverage, defect density, pass/fail rate, test execution rate...',
+              backEnglish: 'Measurements used to evaluate testing progress and quality: coverage, defect density, pass/fail rates, execution rates.' },
+
+            // Chapter 6 - Tools
+            { id: 72, chapter: 'ch6', vietnamese: 'Tự động hóa kiểm thử', english: 'Test Automation',
+              backVietnamese: 'Sử dụng công cụ phần mềm để thực thi test tự động, so sánh kết quả thực tế với kỳ vọng và báo cáo kết quả.',
+              backEnglish: 'The use of software to perform test activities that would otherwise need to be performed manually.' },
+            { id: 73, chapter: 'ch6', vietnamese: 'CI/CD', english: 'CI/CD (Continuous Integration / Continuous Deployment)',
+              backVietnamese: 'Tích hợp code thường xuyên (CI) và deploy tự động (CD). Test automation chạy tự động sau mỗi commit.',
+              backEnglish: 'Continuous Integration: merging code frequently. Continuous Deployment: automating release pipeline. Tests run automatically.' },
+            { id: 74, chapter: 'ch6', vietnamese: 'Công cụ quản lý test', english: 'Test Management Tool',
+              backVietnamese: 'Công cụ quản lý test case, test execution, defect tracking và reporting. Ví dụ: Jira, TestRail, Zephyr.',
+              backEnglish: 'Tools supporting test management including test planning, test case management, and defect tracking.' },
+            { id: 75, chapter: 'ch6', vietnamese: 'Lợi ích tự động hóa', english: 'Benefits of Test Automation',
+              backVietnamese: 'Giảm effort regression testing, tăng tần suất và phạm vi test, nhanh feedback, chạy 24/7, loại bỏ lỗi thủ công.',
+              backEnglish: 'Reduced regression effort, increased test frequency/coverage, faster feedback, 24/7 execution, reduced human error.' },
+            { id: 76, chapter: 'ch6', vietnamese: 'Rủi ro tự động hóa', english: 'Risks of Test Automation',
+              backVietnamese: 'Chi phí ban đầu cao, cần kỹ năng kỹ thuật, maintenance effort lớn, false sense of security, không thể thay thế manual testing hoàn toàn.',
+              backEnglish: 'High initial cost, requires technical skills, maintenance effort, false sense of security, cannot replace all manual testing.' },
+
+            // Extra Concepts
+            { id: 77, chapter: 'extra', vietnamese: 'Test charter', english: 'Test Charter',
+              backVietnamese: 'Tài liệu định hướng cho một exploratory testing session: mục tiêu, phạm vi và thời gian của session.',
+              backEnglish: 'A document that describes the scope, objectives, and approach for an exploratory testing session.' },
+            { id: 78, chapter: 'extra', vietnamese: 'Test session', english: 'Test Session',
+              backVietnamese: 'Khung thời gian cố định để thực hiện exploratory testing (thường 60-90 phút). Kết quả được ghi lại trong session report.',
+              backEnglish: 'A fixed period of time dedicated to exploratory testing, typically 60-90 minutes, with results recorded in a session report.' },
+            { id: 79, chapter: 'extra', vietnamese: 'Defect density', english: 'Defect Density',
+              backVietnamese: 'Số defect trên một đơn vị code hoặc chức năng. Dùng để đánh giá chất lượng và xác định module cần test nhiều hơn.',
+              backEnglish: 'A measure of the number of defects per unit size of a work product.' },
+            { id: 80, chapter: 'extra', vietnamese: 'Test coverage', english: 'Test Coverage',
+              backVietnamese: 'Phần trăm test condition, requirement hoặc code đã được bao phủ bởi test cases. Đo lường độ đầy đủ của test.',
+              backEnglish: 'The degree to which specified coverage items have been exercised by test cases, expressed as a percentage.' },
+            { id: 81, chapter: 'extra', vietnamese: 'Requirements coverage', english: 'Requirements Coverage',
+              backVietnamese: '% requirements đã có ít nhất một test case tương ứng. Đảm bảo mọi requirement đều được kiểm thử.',
+              backEnglish: 'The percentage of requirements that are covered by corresponding test cases.' },
+            { id: 82, chapter: 'extra', vietnamese: 'Test data', english: 'Test Data',
+              backVietnamese: 'Dữ liệu cụ thể được dùng trong quá trình thực thi test (input values, database records, files...).',
+              backEnglish: 'Data created or selected to satisfy preconditions and inputs for test execution.' },
+            { id: 83, chapter: 'extra', vietnamese: 'Test environment', english: 'Test Environment',
+              backVietnamese: 'Môi trường (phần cứng, phần mềm, network, cấu hình) cần thiết để thực thi test. Phải gần giống production.',
+              backEnglish: 'An environment containing hardware, instrumentation, simulators, software tools, and other support elements needed to run tests.' },
+            { id: 84, chapter: 'extra', vietnamese: 'Smoke Testing', english: 'Smoke Testing',
+              backVietnamese: 'Kiểm thử nhanh các chức năng chính để xác nhận build mới có thể test được. Không đi sâu vào chi tiết.',
+              backEnglish: 'A test suite that covers the main functionality to ensure a new build is stable enough for further testing.' },
+            { id: 85, chapter: 'extra', vietnamese: 'Sanity Testing', english: 'Sanity Testing',
+              backVietnamese: 'Kiểm thử nhanh một chức năng cụ thể sau khi fix bug hoặc thay đổi nhỏ. Hẹp hơn smoke testing.',
+              backEnglish: 'Narrow regression testing focusing on one or a few areas of functionality after a bug fix or minor change.' },
+            { id: 86, chapter: 'extra', vietnamese: 'Agile Testing', english: 'Agile Testing',
+              backVietnamese: 'Kiểm thử trong môi trường Agile: collaborative, continuous, whole-team. Test xảy ra trong mỗi sprint, không phải cuối dự án.',
+              backEnglish: 'Testing practices in an Agile environment: collaborative, continuous, whole-team quality responsibility, testing within each sprint.' },
+            { id: 87, chapter: 'extra', vietnamese: 'Test Pyramid', english: 'Test Pyramid',
+              backVietnamese: 'Mô hình phân bổ test tối ưu: nhiều unit test (nhanh, rẻ) → ít integration test → rất ít E2E test (chậm, đắt).',
+              backEnglish: 'A model showing optimal test distribution: many unit tests (fast, cheap) → fewer integration tests → few E2E tests (slow, expensive).' },
+            { id: 88, chapter: 'extra', vietnamese: 'Defect clustering', english: 'Defect Clustering',
+              backVietnamese: 'Phần lớn defect thường tập trung ở một số module nhỏ (nguyên tắc Pareto 80/20). Test nhiều hơn ở các "hot spot" này.',
+              backEnglish: 'A small number of modules contain most defects found during testing (Pareto principle: 80% defects in 20% modules).' },
+            { id: 89, chapter: 'extra', vietnamese: 'Independence of Testing', english: 'Independence of Testing',
+              backVietnamese: 'Tester không phải là người viết code sẽ tìm được nhiều defect hơn vì nhìn hệ thống với góc độ khác.',
+              backEnglish: 'A separation of responsibilities to encourage independent testing, as testers who didn\'t write the code find more defects.' },
+            { id: 90, chapter: 'extra', vietnamese: 'TDD', english: 'Test-Driven Development',
+              backVietnamese: 'Viết test TRƯỚC khi viết code. Quy trình: Red (test fail) → Green (code pass) → Refactor. Test là spec của code.',
+              backEnglish: 'A development approach where tests are written before the code: Red (failing test) → Green (passing code) → Refactor.' }
+        ];
+
+        // Application State
+        let currentIndex = 0;
+        let filteredCards = [...flashcards];
+        let isFlipped = false;
+        let knownCards = new Set();
+
+        // Initialize
+        function init() {
+            loadProgress();
+            setupEventListeners();
+            displayCard();
+            updateStats();
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Card click/flip
+            document.getElementById('flipCard').addEventListener('click', flipCard);
+
+            // Navigation buttons
+            document.getElementById('nextBtn').addEventListener('click', nextCard);
+            document.getElementById('prevBtn').addEventListener('click', prevCard);
+
+            // Action buttons
+            document.getElementById('knownBtn').addEventListener('click', markKnown);
+            document.getElementById('learningBtn').addEventListener('click', markLearning);
+            document.getElementById('shuffleBtn').addEventListener('click', shuffle);
+
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    filterByChapter(e.target.dataset.filter);
+                });
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    flipCard();
+                } else if (e.code === 'ArrowRight') {
+                    nextCard();
+                } else if (e.code === 'ArrowLeft') {
+                    prevCard();
+                } else if (e.key === 'k' || e.key === 'K') {
+                    markKnown();
+                } else if (e.key === 'l' || e.key === 'L') {
+                    markLearning();
+                } else if (e.key === 's' || e.key === 'S') {
+                    shuffle();
+                }
+            });
+        }
+
+        // Display Card
+        function displayCard() {
+            isFlipped = false;
+            document.getElementById('flipCard').classList.remove('flipped');
+
+            if (filteredCards.length === 0) {
+                showEmptyState();
+                return;
+            }
+
+            const card = filteredCards[currentIndex];
+
+            // Front
+            document.getElementById('cardFrontVietnamese').textContent = card.vietnamese;
+            document.getElementById('cardFrontEnglish').textContent = card.english;
+            document.getElementById('cardNumber').textContent = `${card.chapter.toUpperCase()} #${card.id}`;
+
+            // Back
+            document.getElementById('cardBackVietnamese').textContent = card.backVietnamese;
+            document.getElementById('cardBackEnglish').textContent = card.backEnglish;
+
+            const exampleEl = document.getElementById('cardBackExample');
+            if (card.example) {
+                exampleEl.textContent = card.example;
+                exampleEl.style.display = 'block';
+            } else {
+                exampleEl.style.display = 'none';
+            }
+
+            // Update card styling if known
+            const flipCard = document.getElementById('flipCard');
+            if (knownCards.has(card.id)) {
+                flipCard.classList.add('known');
+            } else {
+                flipCard.classList.remove('known');
+            }
+
+            updateProgress();
+            updateButtonStates();
+        }
+
+        // Flip Card
+        function flipCard() {
+            document.getElementById('flipCard').classList.toggle('flipped');
+            isFlipped = !isFlipped;
+        }
+
+        // Empty State
+        function showEmptyState() {
+            const section = document.querySelector('.card-section');
+            section.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <div class="empty-state-text">No cards found in this category</div>
+                </div>
+            `;
+            updateButtonStates();
+        }
+
+        // Navigation
+        function nextCard() {
+            if (currentIndex < filteredCards.length - 1) {
+                currentIndex++;
+                displayCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                displayCard();
+            }
+        }
+
+        // Mark Known
+        function markKnown() {
+            if (filteredCards.length === 0) return;
+            const card = filteredCards[currentIndex];
+            knownCards.add(card.id);
+            displayCard();
+            updateStats();
+            saveProgress();
+        }
+
+        // Mark Learning
+        function markLearning() {
+            if (filteredCards.length === 0) return;
+            const card = filteredCards[currentIndex];
+            knownCards.delete(card.id);
+            displayCard();
+            updateStats();
+            saveProgress();
+        }
+
+        // Shuffle
+        function shuffle() {
+            filteredCards = filteredCards.sort(() => Math.random() - 0.5);
+            currentIndex = 0;
+            displayCard();
+        }
+
+        // Filter
+        function filterByChapter(chapter) {
+            if (chapter === 'all') {
+                filteredCards = [...flashcards];
+            } else {
+                filteredCards = flashcards.filter(card => card.chapter === chapter);
+            }
+            currentIndex = 0;
+            displayCard();
+        }
+
+        // Progress
+        function updateProgress() {
+            const total = filteredCards.length;
+            const progress = total > 0 ? ((currentIndex + 1) / total) * 100 : 0;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `Card ${currentIndex + 1} of ${total}`;
+        }
+
+        // Update Button States
+        function updateButtonStates() {
+            const hasCards = filteredCards.length > 0;
+            document.getElementById('prevBtn').disabled = !hasCards || currentIndex === 0;
+            document.getElementById('nextBtn').disabled = !hasCards || currentIndex === filteredCards.length - 1;
+            document.getElementById('knownBtn').disabled = !hasCards;
+            document.getElementById('learningBtn').disabled = !hasCards;
+            document.getElementById('shuffleBtn').disabled = !hasCards;
+        }
+
+        // Update Stats
+        function updateStats() {
+            const total = flashcards.length;
+            const known = knownCards.size;
+            const learning = total - known;
+            const percent = total > 0 ? Math.round((known / total) * 100) : 0;
+
+            document.getElementById('knownCount').textContent = known;
+            document.getElementById('learningCount').textContent = learning;
+            document.getElementById('progressPercent').textContent = percent + '%';
+            document.getElementById('statsText').textContent = `Known: ${known} | Learning: ${learning}`;
+        }
+
+        // Local Storage
+        function saveProgress() {
+            localStorage.setItem('knownCards', JSON.stringify(Array.from(knownCards)));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('knownCards');
+            if (saved) {
+                knownCards = new Set(JSON.parse(saved));
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
