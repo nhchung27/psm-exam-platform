@@ -33,105 +33,115 @@
     }
 
     .container { max-width: 520px; width: 100%; text-align: center; }
-
-    .logo {
-      font-size: 36px;
-      margin-bottom: 12px;
-    }
-
-    h1 {
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 40px;
-    }
-
-    .cards {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+    .logo { font-size: 36px; margin-bottom: 12px; }
+    h1 { font-size: 28px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+    .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 40px; }
+    .cards { display: flex; flex-direction: column; gap: 16px; }
 
     .card {
-      display: block;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 24px 20px;
-      text-decoration: none;
       color: var(--text);
       transition: transform .2s, box-shadow .2s, border-color .2s;
       text-align: left;
       cursor: pointer;
+      width: 100%;
     }
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,.4);
-    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.4); }
 
-    .card-inner {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .card-icon {
-      width: 52px; height: 52px;
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px;
-      flex-shrink: 0;
-    }
-
+    .card-inner { display: flex; align-items: center; gap: 16px; }
+    .card-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
     .card-body { flex: 1; }
+    .card-label { font-size: 10px; font-weight: 700; letter-spacing: .08em; margin-bottom: 4px; }
+    .card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .card-desc { font-size: 13px; color: var(--muted); }
+    .card-arrow { font-size: 18px; color: var(--muted); flex-shrink: 0; }
+    .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; margin-top: 8px; }
 
-    .card-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      margin-bottom: 4px;
+    .footer { margin-top: 32px; font-size: 12px; color: var(--muted); }
+
+    /* ── Modal overlay ── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.65);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      z-index: 100;
+      opacity: 0; pointer-events: none;
+      transition: opacity .2s;
+    }
+    .overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: #1E293B;
+      border: 1px solid rgba(148,163,184,.15);
+      border-radius: 20px;
+      padding: 32px 28px;
+      width: 100%; max-width: 380px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.6);
+      transform: translateY(12px) scale(.97);
+      transition: transform .22s;
+    }
+    .overlay.open .modal { transform: translateY(0) scale(1); }
+
+    .modal-icon {
+      width: 56px; height: 56px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin: 0 auto 16px;
+    }
+    .modal h2 { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 4px; }
+    .modal-sub { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 24px; }
+
+    .input-wrap { position: relative; margin-bottom: 12px; }
+    .input-wrap input {
+      width: 100%; padding: 12px 44px 12px 14px;
+      background: #0F172A; border: 1.5px solid rgba(148,163,184,.2);
+      border-radius: 10px; color: var(--text); font-size: 15px;
+      font-family: inherit; outline: none;
+      transition: border-color .15s;
+    }
+    .input-wrap input:focus { border-color: var(--accent-color); }
+    .input-wrap input.error { border-color: #EF4444; animation: shake .3s; }
+
+    .eye-btn {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: var(--muted);
+      font-size: 16px; padding: 2px; line-height: 1;
     }
 
-    .card-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 4px;
+    .error-msg {
+      font-size: 12px; color: #FCA5A5; margin-bottom: 12px;
+      display: none; text-align: left;
     }
+    .error-msg.show { display: block; }
 
-    .card-desc {
-      font-size: 13px;
-      color: var(--muted);
+    .submit-btn {
+      width: 100%; padding: 13px; border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 700; cursor: pointer; color: white;
+      transition: opacity .15s, transform .1s;
     }
+    .submit-btn:hover { opacity: .9; }
+    .submit-btn:active { transform: scale(.98); }
 
-    .card-arrow {
-      font-size: 18px;
-      color: var(--muted);
-      flex-shrink: 0;
+    .cancel-btn {
+      width: 100%; padding: 10px; border: 1px solid rgba(148,163,184,.15);
+      border-radius: 10px; background: none; color: var(--muted);
+      font-size: 14px; cursor: pointer; margin-top: 8px;
+      font-family: inherit; transition: color .15s;
     }
+    .cancel-btn:hover { color: var(--text); }
 
-    .badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 6px;
-      margin-top: 8px;
-    }
-
-    .footer {
-      margin-top: 32px;
-      font-size: 12px;
-      color: var(--muted);
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      60%      { transform: translateX(6px); }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .card { transition: none; }
+      .card, .overlay, .modal { transition: none; }
     }
   </style>
 </head>
@@ -143,7 +153,11 @@
 
     <div class="cards">
       <!-- ISTQB Foundation -->
-      <a href="ISTQB Foundation/index.html" class="card" style="border-color: rgba(13,148,136,.3);" onmouseover="this.style.borderColor='rgba(13,148,136,.6)'" onmouseout="this.style.borderColor='rgba(13,148,136,.3)'">
+      <button class="card" id="card-istqb"
+        style="border-color: rgba(13,148,136,.3);"
+        onmouseover="this.style.borderColor='rgba(13,148,136,.6)'"
+        onmouseout="this.style.borderColor='rgba(13,148,136,.3)'"
+        onclick="openModal('istqb')">
         <div class="card-inner">
           <div class="card-icon" style="background: rgba(13,148,136,.15); border: 1.5px solid rgba(13,148,136,.3);">📋</div>
           <div class="card-body">
@@ -154,10 +168,14 @@
           </div>
           <div class="card-arrow">→</div>
         </div>
-      </a>
+      </button>
 
       <!-- PSM Certification -->
-      <a href="PSM Certification/index.html" class="card" style="border-color: rgba(124,58,237,.3);" onmouseover="this.style.borderColor='rgba(124,58,237,.6)'" onmouseout="this.style.borderColor='rgba(124,58,237,.3)'">
+      <button class="card" id="card-psm"
+        style="border-color: rgba(124,58,237,.3);"
+        onmouseover="this.style.borderColor='rgba(124,58,237,.6)'"
+        onmouseout="this.style.borderColor='rgba(124,58,237,.3)'"
+        onclick="openModal('psm')">
         <div class="card-inner">
           <div class="card-icon" style="background: rgba(124,58,237,.12); border: 1.5px solid rgba(124,58,237,.3);">🏆</div>
           <div class="card-body">
@@ -167,10 +185,141 @@
           </div>
           <div class="card-arrow">→</div>
         </div>
-      </a>
+      </button>
     </div>
 
     <p class="footer">Tài liệu dựa trên ISTQB CTFL Syllabus v4.0.1 &amp; Scrum.org PSM curriculum</p>
   </div>
+
+  <!-- Password Modal -->
+  <div class="overlay" id="overlay" onclick="onOverlayClick(event)">
+    <div class="modal">
+      <div class="modal-icon" id="modal-icon"></div>
+      <h2 id="modal-title"></h2>
+      <p class="modal-sub">Nhập mật khẩu để truy cập khoá học</p>
+
+      <div class="input-wrap">
+        <input type="password" id="pw-input" placeholder="Mật khẩu"
+          onkeydown="if(event.key==='Enter') submitPassword()"
+          oninput="clearError()" autocomplete="current-password" />
+        <button class="eye-btn" type="button" onclick="toggleEye()" id="eye-btn" aria-label="Hiện/ẩn mật khẩu">👁</button>
+      </div>
+      <p class="error-msg" id="error-msg">Mật khẩu không đúng. Vui lòng thử lại.</p>
+
+      <button class="submit-btn" id="submit-btn" onclick="submitPassword()">Xác nhận</button>
+      <button class="cancel-btn" onclick="closeModal()">Huỷ</button>
+    </div>
+  </div>
+
+  <script>
+    // ── Password hashes (SHA-256) ──────────────────────────────────────────
+    // To change a password, run in terminal:
+    //   echo -n "newpassword" | shasum -a 256
+    // Then replace the hash below.
+    const PASSWORDS = {
+      istqb: '095029fe10fd2387e1dc6b74c74844352f450500a2bfc3a82b2d06fb39d2f2e4', // "istqb"
+      psm:   '3cf27f7408755a5e12b08812b22ad88cb17322b52a61e3fabd93f2e9efef5668', // "psm"
+    };
+
+    const COURSES = {
+      istqb: {
+        title: 'CTFL Foundation Level',
+        icon: '📋',
+        color: '#0D9488',
+        bg: 'rgba(13,148,136,.15)',
+        url: 'ISTQB Foundation/index.html',
+      },
+      psm: {
+        title: 'PSM I & II',
+        icon: '🏆',
+        color: '#7C3AED',
+        bg: 'rgba(124,58,237,.12)',
+        url: 'PSM Certification/index.html',
+      },
+    };
+
+    let currentCourse = null;
+
+    // SHA-256 via WebCrypto
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    function openModal(course) {
+      // Skip password if already authenticated this session
+      if (sessionStorage.getItem('auth_' + course) === '1') {
+        window.location.href = COURSES[course].url;
+        return;
+      }
+
+      currentCourse = course;
+      const c = COURSES[course];
+
+      document.getElementById('modal-icon').textContent = c.icon;
+      document.getElementById('modal-icon').style.background = c.bg;
+      document.getElementById('modal-icon').style.border = '1.5px solid ' + c.color + '44';
+      document.getElementById('modal-title').textContent = c.title;
+      document.getElementById('submit-btn').style.background = c.color;
+      document.documentElement.style.setProperty('--accent-color', c.color);
+
+      const overlay = document.getElementById('overlay');
+      overlay.classList.add('open');
+
+      setTimeout(() => {
+        document.getElementById('pw-input').value = '';
+        document.getElementById('pw-input').focus();
+        clearError();
+      }, 50);
+    }
+
+    function closeModal() {
+      document.getElementById('overlay').classList.remove('open');
+      currentCourse = null;
+    }
+
+    function onOverlayClick(e) {
+      if (e.target === document.getElementById('overlay')) closeModal();
+    }
+
+    function clearError() {
+      document.getElementById('pw-input').classList.remove('error');
+      document.getElementById('error-msg').classList.remove('show');
+    }
+
+    async function submitPassword() {
+      const input = document.getElementById('pw-input').value;
+      if (!input) return;
+
+      const hash = await sha256(input);
+      if (hash === PASSWORDS[currentCourse]) {
+        sessionStorage.setItem('auth_' + currentCourse, '1');
+        window.location.href = COURSES[currentCourse].url;
+      } else {
+        const el = document.getElementById('pw-input');
+        el.classList.add('error');
+        document.getElementById('error-msg').classList.add('show');
+        el.value = '';
+        el.focus();
+      }
+    }
+
+    function toggleEye() {
+      const input = document.getElementById('pw-input');
+      const btn   = document.getElementById('eye-btn');
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁';
+      }
+    }
+
+    // Close on Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
 </body>
 </html>
