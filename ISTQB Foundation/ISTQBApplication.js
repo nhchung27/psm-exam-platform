@@ -19,25 +19,70 @@ function saveProgress(p) {
   localStorage.setItem('istqb_progress', JSON.stringify(p));
 }
 
-// ─── icons ───────────────────────────────────────────────────────────────────
-const IconBook    = () => <span style={{fontSize:'1.1em'}}>📖</span>;
-const IconCards   = () => <span style={{fontSize:'1.1em'}}>🃏</span>;
-const IconQuiz    = () => <span style={{fontSize:'1.1em'}}>✏️</span>;
-const IconTrophy  = () => <span style={{fontSize:'1.1em'}}>🏆</span>;
-const IconTarget  = () => <span style={{fontSize:'1.1em'}}>🎯</span>;
-const IconBack    = () => <span style={{fontSize:'1.1em'}}>←</span>;
-const IconCheck   = () => <span style={{fontSize:'1.1em'}}>✓</span>;
-const IconX       = () => <span style={{fontSize:'1.1em'}}>✗</span>;
-const IconWarning = () => <span style={{fontSize:'1.1em'}}>⚠️</span>;
-const IconTimer   = () => <span style={{fontSize:'1.1em'}}>⏱️</span>;
-const IconWeight  = () => <span style={{fontSize:'1.1em'}}>⚖️</span>;
+// ─── SVG icons ───────────────────────────────────────────────────────────────
+const IconBook = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+  </svg>
+);
+const IconCards = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+  </svg>
+);
+const IconQuiz = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+  </svg>
+);
+const IconTrophy = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+    <path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+    <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/>
+  </svg>
+);
+const IconTarget = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+  </svg>
+);
+const IconBack = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polyline points="15 18 9 12 15 6"/>
+  </svg>
+);
+const IconCheck = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+);
+const IconX = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+const IconWarning = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+    <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+  </svg>
+);
 
 // ─── Chapter Card ────────────────────────────────────────────────────────────
 function ChapterCard({ chapter, progress, onStudy, onFlashcards, onQuiz }) {
-  const best = progress[`quiz_ch${chapter.id}`];
-  const pct  = best ? Math.round((best.score / best.total) * 100) : null;
+  const best    = progress[`quiz_ch${chapter.id}`];
+  const pct     = best ? Math.round((best.score / best.total) * 100) : null;
   const totalQ  = chapter.questions.length;
   const totalKW = chapter.keywords.length;
+
+  const btnBase = {
+    padding: '9px 6px', borderRadius: '8px', fontSize: '11.5px', fontWeight: 600,
+    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    gap: '5px', whiteSpace: 'nowrap', transition: 'opacity .15s',
+    fontFamily: 'inherit',
+  };
 
   return (
     <div style={{
@@ -48,58 +93,61 @@ function ChapterCard({ chapter, progress, onStudy, onFlashcards, onQuiz }) {
       display: 'flex',
       flexDirection: 'column',
       gap: '12px',
+      height: '100%',
       transition: 'transform .2s, box-shadow .2s',
       cursor: 'default',
     }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px rgba(0,0,0,.4)`; }}
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,.4)'; }}
       onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
     >
-      {/* header */}
+      {/* header — number chip instead of emoji */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
         <div style={{
-          width: '44px', height: '44px', borderRadius: '12px',
-          background: chapter.color + '22', border: `1.5px solid ${chapter.color}44`,
+          width: '44px', height: '44px', borderRadius: '12px', flexShrink: 0,
+          background: chapter.color + '18', border: `1.5px solid ${chapter.color}40`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '22px', flexShrink: 0,
-        }}>{chapter.icon}</div>
+        }}>
+          <span style={{ fontSize: '17px', fontWeight: 800, color: chapter.color, lineHeight: 1 }}>
+            {chapter.id}
+          </span>
+        </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: '11px', color: 'var(--muted)', fontWeight: 600, letterSpacing: '.06em', marginBottom: '2px' }}>
+          <div style={{ fontSize: '10px', color: chapter.color, fontWeight: 700, letterSpacing: '.08em', marginBottom: '2px' }}>
             CHƯƠNG {chapter.id}
           </div>
-          <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text)', lineHeight: 1.3 }}>
+          <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)', lineHeight: 1.35 }}>
             {chapter.title}
           </div>
-          <div style={{ fontSize: '13px', color: 'var(--muted)', marginTop: '2px' }}>
+          <div style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '2px' }}>
             {chapter.subtitle}
           </div>
         </div>
       </div>
 
-      {/* meta */}
-      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-        {[
-          { label: `${totalKW} từ khóa`, color: '#60A5FA' },
-          { label: `${totalQ} câu hỏi`, color: '#A78BFA' },
-          { label: chapter.weight, icon: <IconWeight /> },
-          { label: chapter.time + ' phút', icon: <IconTimer /> },
-        ].map((t, i) => (
-          <span key={i} style={{
-            fontSize: '11px', fontWeight: 600, padding: '3px 8px',
-            borderRadius: '6px', background: 'var(--surface-2)',
-            color: t.color || 'var(--muted)',
-          }}>
-            {t.icon && <span style={{ marginRight: '3px' }}>{t.icon}</span>}
-            {t.label}
-          </span>
-        ))}
+      {/* meta badges — text only, no emoji icons */}
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '6px', background: 'rgba(96,165,250,.12)', color: '#60A5FA', border: '1px solid rgba(96,165,250,.18)' }}>
+          {totalKW} từ khóa
+        </span>
+        <span style={{ fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '6px', background: 'rgba(167,139,250,.12)', color: '#A78BFA', border: '1px solid rgba(167,139,250,.18)' }}>
+          {totalQ} câu hỏi
+        </span>
+        <span style={{ fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '6px', background: 'var(--surface-2)', color: 'var(--muted)' }}>
+          {chapter.time} phút
+        </span>
+        <span style={{ fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '6px', background: 'rgba(245,158,11,.1)', color: '#F59E0B', border: '1px solid rgba(245,158,11,.18)' }}>
+          {chapter.weight}
+        </span>
       </div>
 
-      {/* progress */}
+      {/* best score bar */}
       {pct !== null && (
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--muted)', marginBottom: '4px' }}>
             <span>Kết quả tốt nhất</span>
-            <span style={{ color: pct >= 70 ? 'var(--success)' : 'var(--accent)', fontWeight: 700 }}>{pct}% ({best.score}/{best.total})</span>
+            <span style={{ color: pct >= 70 ? 'var(--success)' : 'var(--accent)', fontWeight: 700 }}>
+              {pct}% ({best.score}/{best.total})
+            </span>
           </div>
           <div style={{ height: '4px', background: 'var(--surface-2)', borderRadius: '4px', overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${pct}%`, background: pct >= 70 ? 'var(--success)' : 'var(--accent)', borderRadius: '4px', transition: 'width .4s' }} />
@@ -107,26 +155,26 @@ function ChapterCard({ chapter, progress, onStudy, onFlashcards, onQuiz }) {
         </div>
       )}
 
-      {/* actions */}
-      <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+      {/* spacer — pins actions to card bottom */}
+      <div style={{ flex: 1 }} />
+
+      {/* actions — equal-width grid, no wrapping */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px' }}>
         <button onClick={() => onStudy(chapter.id)} style={{
-          flex: 1, padding: '8px 4px', borderRadius: '8px', border: '1px solid var(--border)',
-          background: 'var(--surface-2)', color: 'var(--text)', fontSize: '12px', fontWeight: 600,
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px',
+          ...btnBase, border: '1px solid var(--border)',
+          background: 'var(--surface-2)', color: 'var(--text)',
         }}>
           <IconBook /> Học
         </button>
         <button onClick={() => onFlashcards(chapter.id)} style={{
-          flex: 1, padding: '8px 4px', borderRadius: '8px', border: `1px solid ${chapter.color}44`,
-          background: chapter.color + '18', color: chapter.color, fontSize: '12px', fontWeight: 600,
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px',
+          ...btnBase, border: `1px solid ${chapter.color}33`,
+          background: chapter.color + '14', color: chapter.color,
         }}>
-          <IconCards /> Flashcard
+          <IconCards /> Thẻ
         </button>
         <button onClick={() => onQuiz(chapter.id)} style={{
-          flex: 1, padding: '8px 4px', borderRadius: '8px', border: 'none',
-          background: chapter.color, color: 'white', fontSize: '12px', fontWeight: 600,
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px',
+          ...btnBase, border: 'none',
+          background: chapter.color, color: 'white',
         }}>
           <IconQuiz /> Làm bài
         </button>
@@ -215,6 +263,61 @@ function HomeView({ progress, onStudy, onFlashcards, onQuiz, onGlobalQuiz }) {
           </span>
         </div>
       )}
+
+      {/* study tools row */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '28px' }}>
+        {[
+          {
+            label: 'Ôn tập kiến thức', sub: '6 chương chi tiết',
+            color: '#0D9488', bg: 'rgba(13,148,136,.1)', border: 'rgba(13,148,136,.22)',
+            href: 'ctfl-ontap-kienthuc.html',
+            icon: (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            ),
+          },
+          {
+            label: 'Mind Map', sub: 'Sơ đồ tư duy CTFL',
+            color: '#A78BFA', bg: 'rgba(167,139,250,.1)', border: 'rgba(167,139,250,.22)',
+            href: 'ctfl-mind-map.html',
+            icon: (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.64 5.64l2.12 2.12M16.24 16.24l2.12 2.12M5.64 18.36l2.12-2.12M16.24 7.76l2.12-2.12"/>
+              </svg>
+            ),
+          },
+          {
+            label: 'Lịch học', sub: 'Kế hoạch ôn tập',
+            color: '#34D399', bg: 'rgba(52,211,153,.1)', border: 'rgba(52,211,153,.22)',
+            href: 'ctfl-study-schedule.html',
+            icon: (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            ),
+          },
+        ].map((t, i) => (
+          <a key={i} href={t.href} style={{
+            display: 'flex', alignItems: 'center', gap: '10px',
+            padding: '12px 14px', borderRadius: '12px', textDecoration: 'none',
+            background: t.bg, border: `1px solid ${t.border}`,
+            transition: 'transform .15s, box-shadow .15s', cursor: 'pointer',
+          }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,.3)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
+          >
+            <span style={{ color: t.color, flexShrink: 0, display: 'flex' }}>{t.icon}</span>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: t.color, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.label}</div>
+              <div style={{ fontSize: '11px', color: 'var(--muted)' }}>{t.sub}</div>
+            </div>
+          </a>
+        ))}
+      </div>
 
       {/* chapter grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px' }}>
