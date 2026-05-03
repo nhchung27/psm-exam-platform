@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISTQB CTFL v4.0.1 — Lộ trình học 8 tuần</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0F172A;
+            --surface: #1E293B;
+            --surface-2: #334155;
+            --primary: #0D9488;
+            --primary-hover: #0F766E;
+            --primary-muted: rgba(13, 148, 136, 0.15);
+            --accent: #F59E0B;
+            --success: #10B981;
+            --text: #F1F5F9;
+            --muted: #94A3B8;
+            --border: rgba(148, 163, 184, 0.12);
+
+            /* Week colors */
+            --week1: #3b82f6;
+            --week2: #8b5cf6;
+            --week3: #06b6d4;
+            --week4: #f59e0b;
+            --week5: #10b981;
+            --week6: #ef4444;
+            --week7: #f97316;
+            --week8: #22c55e;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ── STICKY TOP BAR ── */
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            height: 52px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 20px;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .top-bar-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .top-bar-badge {
+            background: var(--primary-muted);
+            color: var(--primary);
+            border: 1px solid rgba(13, 148, 136, 0.3);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .top-bar-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .top-bar-center {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .progress-bar-container {
+            height: 5px;
+            background: var(--surface-2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #14B8A6);
+            border-radius: 3px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        .progress-label {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .percentage {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .reset-btn {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 4px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .reset-btn:hover {
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        /* ── MAIN CONTAINER ── */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 36px 20px 60px;
+        }
+
+        /* ── HERO SECTION ── */
+        .hero {
+            margin-bottom: 48px;
+        }
+
+        .hero-eyebrow {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        .hero-heading {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .hero-subtitle {
+            font-size: 15px;
+            color: var(--muted);
+            margin-bottom: 28px;
+            font-weight: 500;
+        }
+
+        /* ── SESSION CARDS ── */
+        .session-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+        }
+
+        .session-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            position: relative;
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+
+        .session-card:hover {
+            border-color: rgba(148, 163, 184, 0.25);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .session-card.current {
+            border-color: rgba(13, 148, 136, 0.4);
+            background: rgba(13, 148, 136, 0.05);
+        }
+
+        .session-card.current::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), #14B8A6);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .session-card.checked {
+            opacity: 0.45;
+            background: var(--surface);
+        }
+
+        .session-card-day {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+
+        .session-card-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .session-card.checked .session-card-title {
+            text-decoration: line-through;
+            text-decoration-color: var(--muted);
+            color: var(--muted);
+        }
+
+        .session-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .duration-badge {
+            background: var(--surface-2);
+            color: var(--muted);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .session-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--success);
+            flex-shrink: 0;
+        }
+
+        .next-up-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ── TIMELINE ── */
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 14px;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .week-row {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 3px solid transparent;
+            border-radius: 10px;
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 16px;
+            user-select: none;
+        }
+
+        .week-row:hover {
+            border-color: rgba(148, 163, 184, 0.25);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .week-row.expanded {
+            border-radius: 10px 10px 0 0;
+            border-bottom-color: transparent;
+        }
+
+        .week-row.week-1 { border-left-color: var(--week1); }
+        .week-row.week-2 { border-left-color: var(--week2); }
+        .week-row.week-3 { border-left-color: var(--week3); }
+        .week-row.week-4 { border-left-color: var(--week4); }
+        .week-row.week-5 { border-left-color: var(--week5); }
+        .week-row.week-6 { border-left-color: var(--week6); }
+        .week-row.week-7 { border-left-color: var(--week7); }
+        .week-row.week-8 { border-left-color: var(--week8); }
+
+        .week-row.completed { opacity: 0.6; }
+        .week-row.current { background: rgba(13, 148, 136, 0.04); }
+
+        .week-summary {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .week-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .week-row.week-1 .week-dot { background: var(--week1); }
+        .week-row.week-2 .week-dot { background: var(--week2); }
+        .week-row.week-3 .week-dot { background: var(--week3); }
+        .week-row.week-4 .week-dot { background: var(--week4); }
+        .week-row.week-5 .week-dot { background: var(--week5); }
+        .week-row.week-6 .week-dot { background: var(--week6); }
+        .week-row.week-7 .week-dot { background: var(--week7); }
+        .week-row.week-8 .week-dot { background: var(--week8); }
+
+        .week-row.completed .week-dot {
+            background: var(--success);
+        }
+
+        .week-row.current .week-dot {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4); }
+            50% { opacity: 0.8; box-shadow: 0 0 0 4px rgba(13, 148, 136, 0); }
+        }
+
+        .week-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .week-chapter {
+            background: var(--primary-muted);
+            color: var(--primary);
+            border: 1px solid rgba(13, 148, 136, 0.25);
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .week-session-count {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .week-checkboxes {
+            display: flex;
+            gap: 5px;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+
+        .mini-checkbox {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            background: var(--surface-2);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .mini-checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .week-arrow {
+            font-size: 10px;
+            color: var(--muted);
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .week-row.expanded .week-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* ── WEEK CONTENT ── */
+        .week-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            margin-top: -1px;
+        }
+
+        .week-content.expanded {
+            max-height: 2000px;
+        }
+
+        .week-details {
+            padding: 16px 18px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* ── SESSION DETAIL ── */
+        .session-detail {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .session-detail-checkbox {
+            width: 18px;
+            height: 18px;
+            margin-top: 3px;
+            flex-shrink: 0;
+            cursor: pointer;
+            accent-color: var(--success);
+        }
+
+        .session-detail-content { flex: 1; }
+
+        .session-detail-header {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .session-detail-day {
+            background: rgba(13, 148, 136, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(13, 148, 136, 0.2);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .session-detail-duration {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .session-detail-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .session-detail.checked .session-detail-title {
+            text-decoration: line-through;
+            text-decoration-color: var(--muted);
+            color: var(--muted);
+        }
+
+        /* ── TAGS ── */
+        .session-detail-tags {
+            display: flex;
+            gap: 5px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .tag.theory    { background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
+        .tag.practice  { background: rgba(139, 92, 246, 0.12); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.2); }
+        .tag.exercise  { background: rgba(245, 158, 11, 0.12); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.2); }
+        .tag.reflection{ background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .tag.mock      { background: rgba(239, 68, 68, 0.12);  color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .tag.review    { background: rgba(148, 163, 184, 0.1); color: var(--muted); border: 1px solid var(--border); }
+
+        /* ── DETAIL LIST ── */
+        .session-detail-list {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0 0;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .session-detail-list li {
+            margin-bottom: 5px;
+            padding-left: 18px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .session-detail-list li::before {
+            content: '›';
+            position: absolute;
+            left: 4px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 60px;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .top-bar {
+                grid-template-columns: 1fr;
+                height: auto;
+                padding: 10px 16px;
+                gap: 10px;
+            }
+
+            .top-bar-right { justify-content: space-between; }
+
+            .hero-heading { font-size: 1.7rem; }
+
+            .session-cards { grid-template-columns: 1fr; }
+
+            .week-title { font-size: 13px; }
+
+            .week-session-count,
+            .week-checkboxes { display: none; }
+        }
+
+        /* ── PRINT ── */
+        @media print {
+            body { background: white; color: #111; }
+            .top-bar { display: none; }
+            .week-content { max-height: none !important; }
+            .week-arrow { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- STICKY TOP BAR -->
+    <div class="top-bar">
+        <div class="top-bar-brand">
+            <div class="top-bar-badge">ISTQB CTFL v4.0.1</div>
+            <div class="top-bar-name">Lộ trình học 8 tuần</div>
+        </div>
+        <div class="top-bar-center">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressBarFill"></div>
+            </div>
+            <div class="progress-label"><span id="progressCount">0</span> / 24 buổi hoàn thành</div>
+        </div>
+        <div class="top-bar-right">
+            <div class="percentage"><span id="percentage">0</span>%</div>
+            <button class="reset-btn" onclick="resetProgress()">Reset</button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+
+        <!-- HERO SECTION: current week -->
+        <div class="hero" id="heroSection">
+            <div class="hero-eyebrow">Đang học</div>
+            <h1 class="hero-heading" id="heroWeek">Tuần 1</h1>
+            <p class="hero-subtitle" id="heroSubtitle">Tự kiểm tra & Định hướng</p>
+            <div class="session-cards" id="heroSessions"></div>
+        </div>
+
+        <!-- TIMELINE: all weeks -->
+        <div class="section-label">Toàn bộ lịch trình</div>
+        <div class="timeline" id="timeline"></div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        ISTQB® CTFL Syllabus v4.0.1 — Tài liệu phục vụ mục đích học tập cá nhân. © 2026
+    </div>
+
+    <script>
+        // COMPLETE DATA FOR 24 SESSIONS, 8 WEEKS
+        const weeksData = [
+            {
+                weekNum: 1,
+                title: "Tự kiểm tra & Định hướng",
+                chapter: "Ch.1",
+                color: "#3b82f6",
+                sessions: [
+                    {
+                        num: 1,
+                        day: "Thứ Hai",
+                        duration: "90 phút",
+                        title: "Bài tự đánh giá & Tổng quan Syllabus",
+                        tags: ["theory", "reflection"],
+                        details: [
+                            "Làm bài tự đánh giá 30 câu về thực hành kiểm thử hiện tại",
+                            "Đọc tổng quan cấu trúc CTFL Syllabus v4.0.1 (6 chương)",
+                            "Tìm hiểu cấu trúc kỳ thi: 40 câu, 65 phút, điểm đạt 65%",
+                            "Xác định điểm mạnh và lỗ hổng kiến thức cần bổ sung"
+                        ]
+                    },
+                    {
+                        num: 2,
+                        day: "Thứ Tư",
+                        duration: "90 phút",
+                        title: "Ch.1 Phần 1: Nền tảng Kiểm thử",
+                        tags: ["theory"],
+                        details: [
+                            "Error vs Defect vs Failure — phân biệt 3 khái niệm và chuỗi nhân quả",
+                            "Tại sao kiểm thử cần thiết (chi phí phát hiện lỗi sớm vs muộn)",
+                            "7 Nguyên tắc Kiểm thử — học thuộc và hiểu ứng dụng thực tế",
+                            "Ôn flashcard Ch.1 (thẻ 1–19)"
+                        ]
+                    },
+                    {
+                        num: 3,
+                        day: "Thứ Sáu",
+                        duration: "90 phút",
+                        title: "Ch.1 Phần 2: Hoạt động & Vai trò",
+                        tags: ["theory", "practice", "exercise"],
+                        details: [
+                            "Test activities, Testware, Test roles (Test Manager vs Tester)",
+                            "Whole-team approach và Independence of Testing",
+                            "Làm 10 câu practice questions Chương 1",
+                            "Tự vẽ mind map tóm tắt Chương 1"
+                        ]
+                    }
+                ]
+            },
+            {
+                weekNum: 2,
+                title: "Kỹ thuật Black-box",
+                chapter: "Ch.4 Phần 1",
+                color: "#8b5cf6",
+                sessions: [
+                    {
+                        num: 4,
+                        day: "Thứ Hai",
+                        duration: "90 phút",
+                        title: "Equivalence Partitioning",
+                        tags: ["theory", "exercise", "reflection"],
+                        details: [
+                            "Lý thuyết EP: valid và invalid partitions",
+                            "Cách xác định partitions từ requirements",
+                            "Bài tập: lấy một form từ dự án thực tế, áp dụng EP để thiết kế test cases",
+                            "So sánh cách đang viết test case với chuẩn EP"
+                        ]
+                    },
+                    {
+                        num: 5,
+                        day: "Thứ Tư",
+                        duration: "90 phút",
+                        title: "Boundary Value Analysis",
+                        tags: ["theory", "exercise"],
+                        details: [
+                            "BVA lý thuyết: 2-value BVA vs 3-value BVA",
+                            "Khi nào dùng 2-value, khi nào dùng 3-value",
+                            "Kết hợp EP + BVA trong thiết kế test case hoàn chỉnh",
+                            "Bài tập: áp dụng BVA vào cùng form từ Buổi 4"
+                        ]
+                    },
+                    {
+                        num: 6,
+                        day: "Thứ Sáu",
+                        duration: "90 phút",
+                        title: "Decision Table & State Transition Testing",
+                        tags: ["theory", "practice", "exercise"],
+                        details: [
+                            "Decision Table Testing: khi nào dùng, cách xây dựng bảng, tối ưu số test cases",
+                            "State Transition Testing: state diagram, valid/invalid transitions",
+                            "Làm 15 câu practice questions Ch.4 (phần black-box)",
+                            "Ôn flashcard Ch.4 (thẻ 41–54)"
+                        ]
+                    }
+                ]
+            },
+            {
+                weekNum: 3,
+                title: "Kỹ thuật White-box & Experience-based",
+                chapter: "Ch.4 Phần 2",
+                color: "#06b6d4",
+                sessions: [
+                    {
+                        num: 7,
+                        day: "Thứ Hai",
+                        duration: "90 phút",
+                        title: "White-box Techniques",
+                        tags: ["theory", "reflection"],
+                        details: [
+                            "Statement Coverage vs Branch Coverage — ý nghĩa và cách đo lường",
+                            "Tại sao 100% Statement Coverage chưa đủ?",
+                            "Kết nối với CI/CD pipeline và coverage reports",
+                            "Reflection: team đang đo coverage ở mức nào?"
+                        ]
+                    },
+                    {
+                        num: 8,
+                        day: "Thứ Tư",
+                        duration: "90 phút",
+                        title: "Experience-based Techniques",
+                        tags: ["theory", "exercise"],
+                        details: [
+                            "Error Guessing: xây dựng error list từ kinh nghiệm thực tế",
+                            "Exploratory Testing: charter-based approach, session management, ghi chép",
+                            "Checklist-based Testing: khi nào hiệu quả nhất",
+                            "Bài tập: viết một test charter cho tính năng đang kiểm thử"
+                        ]
+                    },
+                    {
+                        num: 9,
+                        day: "Thứ Sáu",
+                        duration: "90 phút",
+                        title: "BDD/ATDD & Tổng kết Chương 4",
+                        tags: ["theory", "exercise"],
+                        details: [
+                            "BDD: Gherkin syntax, Given-When-Then, ví dụ thực tế",
+                            "ATDD: collaboration giữa dev, tester và BA trước khi code",
+                            "Làm 20 câu practice questions Ch.4 tổng hợp",
+                            "Ôn toàn bộ flashcard Ch.4"
+                        ]
+                    }
+                ]
+            },
+            {
+                weekNum: 4,
+                title: "Quản lý Kiểm thử",
+                chapter: "Ch.5",
+                color: "#f59e0b",
+                sessions: [
+                    {
+                        num: 10,
+                        day: "Thứ Hai",
+                        duration: "90 phút",
+                        title: "Test Planning & Estimation",
+                        tags: ["theory", "reflection"],
+                        details: [
+                            "Cấu trúc một Test Plan chuẩn ISTQB",
+                            "Metric-based vs Expert-based estimation",
+                            "Kỹ thuật ước tính: Planning Poker, Wideband Delphi",
+                            "Reflection: Test Plan của team hiện tại thiếu gì so với chuẩn ISTQB?"
+                        ]
+                    },
+                    {
+                        num: 11,
+                        day: "Thứ Tư",
+                        duration: "90 phút",
+                        title: "Risk-based Testing",
+                        tags: ["theory", "exercise"],
+                        details: [
+                            "Product Risk vs Project Risk — phân biệt và ví dụ thực tế",
+                            "Risk matrix (Likelihood × Impact): xây dựng và sử dụng",
+                            "Ưu tiên kiểm thử dựa trên mức độ rủi ro",
+                            "Bài tập: xây dựng risk matrix cho một dự án đang thực hiện"
+                        ]
+                    },
+                    {
+                        num: 12,
+                        day: "Thứ Sáu",
+                        duration: "90 phút",
+                        title: "Monitoring, Defect Management & Metrics",
+                        tags: ["theory", "exercise"],
+                        details: [
+                            "Test Monitoring vs Test Control",
+                            "Defect report chuẩn: Severity vs Priority",
+                            "Test metrics: defect density, pass rate, coverage",
+                            "Configuration Management trong kiểm thử",
+                            "Làm 20 câu practice questions Ch.5"
+                        ]
+                    }
+                ]
+            },
+            {
+                weekNum: 5,
+                title: "Kiểm thử trong SDLC",
+                chapter: "Ch.2",
+                color: "#10b981",
+                sessions: [
+                    {
+                        num: 13,
+                        day: "Thứ Hai",
+                        duration: "90 phút",
+                        title: "Các mô hình SDLC",
+                        tags: ["theory", "reflection"],
+                        details: [
+                            "Sequential models: Waterfall, V-model — khi nào phù hợp",
+                            "Iterative & Incremental: Scrum, Kanban",
+                            "Reflection: dự án đang dùng mô hình nào? Kiểm thử diễn ra như thế nào?"
+                        ]
+                    },
+                    {
+                        num: 14,
+                        day: "Thứ Tư",
+                        duration: "90 phút",
+                        title: "Các mức & Loại kiểm thử",
+                        tags: ["theory"],
+                        details: [
+                            "4 Test Levels: Component → Integration → System → Acceptance",
+                            "Test types: Functional, Non-functional, Structural, Regression, Confirmation",
+                            "Maintenance Testing: impact analysis, phạm vi regression",
+                            "Ôn flashcard Ch.2 (thẻ 20–33)"
+                        ]
+                    },
+                    {
+                        num: 15,
+                        day: "Thứ Sáu",
+                        duration: "90 phút",
+                        title: "Agile Testing & Shift-Left",
+                        tags: ["theory", "exercise"],
+                        details: [
+                            "Kiểm thử trong Agile: continuous testing, sprint-based, whole-team",
+                            "Shift-left trong thực tế: review requirement, TDD, BDD",
+                            "CI/CD và automated testing pipeline",
+                            "Làm 15 câu practice questions Ch.2"
+                        ]
+                    }
+                ]
+            },
+            {
+                weekNum: 6,
+                title: "Kiểm thử tĩnh",
+                chapter: "Ch.3",
+                color: "#ef4444",
+                sessions: [
+                    {
+                        num: 16,
+                        day: "Thứ Hai",
+                        duration: "90 phút",
+                        title: "Nền tảng Kiểm thử tĩnh",
+                        tags: ["theory", "reflection"],
+                        details: [
+                            "Static vs Dynamic Testing: lợi thế của kiểm thử tĩnh",
+                            "Tại sao kiểm thử tĩnh phát hiện được lỗi mà kiểm thử động bỏ qua?",
+                            "Chi phí và lợi ích của review trong dự án thực tế",
+                            "Reflection: team có quy trình review không? Ở mức độ nào?"
+                        ]
+                    },
+                    {
+                        num: 17,
+                        day: "Thứ Tư",
+                        duration: "90 phút",
+                        title: "Các loại Review & Quy trình",
+                        tags: ["theory", "exercise"],
+                        details: [
+                            "4 loại review: Informal → Walkthrough → Technical Review → Inspection",
+                            "Vai trò: Moderator, Author, Reviewer, Scribe, Manager",
+                            "Quy trình review: Planning → Initiation → Individual → Communication → Fix",
+                            "Bài tập: thực hành review một tài liệu yêu cầu thực tế"
+                        ]
+                    },
+                    {
+                        num: 18,
+                        day: "Thứ Sáu",
+                        duration: "90 phút",
+                        title: "Static Analysis & Tổng kết Chương 3",
+                        tags: ["theory", "exercise"],
+                        details: [
+                            "Static Analysis tools: linters, code smell detectors, SonarQube",
+                            "Tổng kết Chương 3",
+                            "Làm 15 câu practice questions Ch.3",
+                            "Ôn flashcard Ch.3 (thẻ 34–40)"
+                        ]
+                    }
+                ]
+            },
+            {
+                weekNum: 7,
+                title: "Công cụ & Ôn tập tổng hợp",
+                chapter: "Ch.6 + Mock 1",
+                color: "#f97316",
+                sessions: [
+                    {
+                        num: 19,
+                        day: "Thứ Hai",
+                        duration: "90 phút",
+                        title: "Chương 6: Công cụ Kiểm thử",
+                        tags: ["theory"],
+                        details: [
+                            "Phân loại công cụ kiểm thử theo mục đích sử dụng",
+                            "Test automation: lợi ích, rủi ro, khi nào nên và không nên tự động hóa",
+                            "CI/CD và tích hợp với test framework",
+                            "Ôn flashcard Ch.6 (thẻ 72–76)"
+                        ]
+                    },
+                    {
+                        num: 20,
+                        day: "Thứ Tư",
+                        duration: "90 phút",
+                        title: "Mock Exam lần 1",
+                        tags: ["mock"],
+                        details: [
+                            "Làm mock exam 40 câu trong đúng 65 phút (mô phỏng thi thật)",
+                            "Chấm điểm và phân tích kết quả: sai nhiều ở chương nào?",
+                            "Tìm hiểu lý do chọn sai — nhận diện \"bẫy\" trong câu hỏi ISTQB"
+                        ]
+                    },
+                    {
+                        num: 21,
+                        day: "Thứ Sáu",
+                        duration: "90 phút",
+                        title: "Review điểm yếu & Ôn Phụ lục",
+                        tags: ["review", "exercise"],
+                        details: [
+                            "Ôn lại nội dung các chương sai nhiều từ mock exam lần 1",
+                            "Đọc Phụ lục A (Learning Objectives) — quan trọng cho kỳ thi",
+                            "Ôn bảng thuật ngữ (Glossary) — các từ dễ nhầm lẫn",
+                            "Ôn flashcard các thẻ chưa đánh dấu \"Biết rồi\""
+                        ]
+                    }
+                ]
+            },
+            {
+                weekNum: 8,
+                title: "Luyện thi & Chuẩn bị",
+                chapter: "Mock 2 & 3",
+                color: "#22c55e",
+                sessions: [
+                    {
+                        num: 22,
+                        day: "Thứ Hai",
+                        duration: "90 phút",
+                        title: "Mock Exam lần 2 & Kỹ năng đọc đề",
+                        tags: ["mock"],
+                        details: [
+                            "Làm mock exam 40 câu lần 2 (bộ câu hỏi khác)",
+                            "Luyện kỹ năng đọc câu hỏi ISTQB: nhận diện từ khóa và distractor",
+                            "Phân tích pattern sai: do hiểu sai hay do đọc nhầm đề?"
+                        ]
+                    },
+                    {
+                        num: 23,
+                        day: "Thứ Tư",
+                        duration: "90 phút",
+                        title: "Ôn tập Learning Objectives",
+                        tags: ["review"],
+                        details: [
+                            "Ôn lại learning objectives từng chương (mức K1/K2/K3)",
+                            "Flashcard sprint: ôn nhanh 90 thuật ngữ quan trọng nhất",
+                            "Viết note tóm tắt cuối kỳ: 1 trang A4 cho mỗi chương (6 trang)"
+                        ]
+                    },
+                    {
+                        num: 24,
+                        day: "Thứ Sáu",
+                        duration: "90 phút",
+                        title: "Mock Exam lần 3 & Chuẩn bị tâm lý",
+                        tags: ["mock", "review"],
+                        details: [
+                            "Làm mock exam 40 câu lần 3 — bài đánh giá sẵn sàng thi",
+                            "Review lần cuối các điểm còn yếu",
+                            "Chuẩn bị tâm lý: tips đêm trước thi, chiến lược làm bài",
+                            "Mục tiêu: đạt ≥75% để tự tin đăng ký thi thật"
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        const tagConfig = {
+            theory:     { label: "Lý thuyết",  class: "theory"     },
+            practice:   { label: "Thực hành",  class: "practice"   },
+            exercise:   { label: "Bài tập",    class: "exercise"   },
+            reflection: { label: "Reflection", class: "reflection" },
+            mock:       { label: "Mock Exam",  class: "mock"       },
+            review:     { label: "Ôn tập",     class: "review"     }
+        };
+
+        // STATE MANAGEMENT
+        let sessionState = {};
+
+        function loadState() {
+            for (let i = 1; i <= 24; i++) {
+                sessionState[i] = localStorage.getItem(`ctfl_session_${i}`) === 'true';
+            }
+        }
+
+        function saveState(sessionNum) {
+            localStorage.setItem(`ctfl_session_${sessionNum}`, sessionState[sessionNum]);
+        }
+
+        function getCompletedCount() {
+            return Object.values(sessionState).filter(Boolean).length;
+        }
+
+        function updateProgress() {
+            const completed = getCompletedCount();
+            const total = 24;
+            const percent = Math.round((completed / total) * 100);
+
+            document.getElementById('progressCount').textContent = completed;
+            document.getElementById('percentage').textContent = percent;
+            document.getElementById('progressBarFill').style.width = percent + '%';
+        }
+
+        // Find current week (first uncompleted session, or last week when all done)
+        function getCurrentWeek() {
+            for (let w = 0; w < weeksData.length; w++) {
+                for (let s of weeksData[w].sessions) {
+                    if (!sessionState[s.num]) return w;
+                }
+            }
+            return weeksData.length - 1;
+        }
+
+        // Render hero section
+        function renderHero() {
+            const currentWeekIdx = getCurrentWeek();
+            const week = weeksData[currentWeekIdx];
+
+            document.getElementById('heroWeek').textContent = `Tuần ${week.weekNum}`;
+            document.getElementById('heroSubtitle').textContent = week.title;
+
+            const heroSessions = week.sessions.map(session => {
+                const isChecked = sessionState[session.num];
+                const firstUncompletedNum = week.sessions.find(s => !sessionState[s.num])?.num;
+                const isFirstUncompleted = session.num === firstUncompletedNum;
+
+                return `
+                    <div class="session-card ${isChecked ? 'checked' : ''} ${isFirstUncompleted ? 'current' : ''}">
+                        ${isFirstUncompleted ? '<div class="next-up-badge">Next Up</div>' : ''}
+                        <div class="session-card-day">${session.day}</div>
+                        <div class="session-card-title">${session.title}</div>
+                        <div class="session-card-footer">
+                            <span class="duration-badge">${session.duration}</span>
+                            <input type="checkbox" class="session-checkbox"
+                                data-session="${session.num}"
+                                ${isChecked ? 'checked' : ''} />
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('heroSessions').innerHTML = heroSessions;
+        }
+
+        // Render timeline
+        function renderTimeline() {
+            const timeline = document.getElementById('timeline');
+
+            timeline.innerHTML = weeksData.map(week => {
+                const allSessions = week.sessions;
+                const completedInWeek = allSessions.filter(s => sessionState[s.num]).length;
+                const isWeekComplete = completedInWeek === allSessions.length;
+                const currentWeekIdx = getCurrentWeek();
+                const isCurrent = weeksData[currentWeekIdx].weekNum === week.weekNum;
+
+                const miniBoxes = allSessions.map(s =>
+                    `<div class="mini-checkbox ${sessionState[s.num] ? 'checked' : ''}"></div>`
+                ).join('');
+
+                const details = allSessions.map(session => {
+                    const isChecked = sessionState[session.num];
+                    const tags = session.tags.map(t =>
+                        `<span class="tag ${tagConfig[t].class}">${tagConfig[t].label}</span>`
+                    ).join('');
+
+                    const detailsList = session.details.map(d => `<li>${d}</li>`).join('');
+
+                    return `
+                        <div class="session-detail ${isChecked ? 'checked' : ''}">
+                            <input type="checkbox" class="session-detail-checkbox"
+                                data-session="${session.num}"
+                                ${isChecked ? 'checked' : ''} />
+                            <div class="session-detail-content">
+                                <div class="session-detail-header">
+                                    <span class="session-detail-day">${session.day}</span>
+                                    <span class="session-detail-duration">${session.duration}</span>
+                                    <span class="session-detail-title">${session.title}</span>
+                                </div>
+                                <div class="session-detail-tags">${tags}</div>
+                                <ul class="session-detail-list">${detailsList}</ul>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="week-row week-${week.weekNum} ${isWeekComplete ? 'completed' : ''} ${isCurrent ? 'current' : ''}"
+                         onclick="toggleWeekExpand(event)">
+                        <div class="week-summary">
+                            <div class="week-dot"></div>
+                            <div class="week-title">Tuần ${week.weekNum} — ${week.title}</div>
+                            <span class="week-chapter">${week.chapter}</span>
+                            <span class="week-session-count">${allSessions.length} buổi</span>
+                            <div class="week-checkboxes">${miniBoxes}</div>
+                        </div>
+                        <div class="week-arrow">▼</div>
+                    </div>
+                    <div class="week-content">
+                        <div class="week-details">${details}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleWeekExpand(event) {
+            const row = event.currentTarget;
+            if (event.target.classList.contains('session-detail-checkbox')) return;
+
+            row.classList.toggle('expanded');
+            const content = row.nextElementSibling;
+            content.classList.toggle('expanded');
+        }
+
+        // Event listeners
+        document.addEventListener('change', (e) => {
+            if (e.target.classList.contains('session-checkbox') ||
+                e.target.classList.contains('session-detail-checkbox')) {
+                const sessionNum = parseInt(e.target.dataset.session);
+                sessionState[sessionNum] = e.target.checked;
+                saveState(sessionNum);
+                updateProgress();
+                renderHero();
+                renderTimeline();
+                attachCheckboxListeners();
+            }
+        });
+
+        function attachCheckboxListeners() {
+            document.querySelectorAll('.session-checkbox, .session-detail-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const sessionNum = parseInt(checkbox.dataset.session);
+                    sessionState[sessionNum] = checkbox.checked;
+                    saveState(sessionNum);
+                });
+            });
+        }
+
+        function resetProgress() {
+            if (confirm('Bạn có chắc muốn reset toàn bộ tiến độ?')) {
+                for (let i = 1; i <= 24; i++) {
+                    sessionState[i] = false;
+                    localStorage.removeItem(`ctfl_session_${i}`);
+                }
+                updateProgress();
+                renderHero();
+                renderTimeline();
+                attachCheckboxListeners();
+            }
+        }
+
+        // Initialize
+        loadState();
+        updateProgress();
+        renderHero();
+        renderTimeline();
+        attachCheckboxListeners();
+    </script>
+
+</body>
+</html>

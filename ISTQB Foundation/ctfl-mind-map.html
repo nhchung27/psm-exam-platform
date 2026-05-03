@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ISTQB CTFL v4.0.1 — Mind Map</title>
+  <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0F172A;
+      --surface: #1E293B;
+      --surface-2: #334155;
+      --primary: #0D9488;
+      --primary-hover: #0F766E;
+      --primary-muted: rgba(13, 148, 136, 0.15);
+      --text: #F1F5F9;
+      --muted: #94A3B8;
+      --border: rgba(148, 163, 184, 0.12);
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* ── FIXED HEADER ── */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-badge {
+      background: var(--primary-muted);
+      color: var(--primary);
+      border: 1px solid rgba(13, 148, 136, 0.3);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .header-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.2px;
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    button {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      background: var(--primary-muted);
+      border-color: rgba(13, 148, 136, 0.4);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    /* ── MIND MAP CANVAS ── */
+    .markmap-wrapper {
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: calc(100vh - 56px);
+      background: #ffffff;
+    }
+
+    .markmap {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* White background for mind map canvas */
+    .markmap svg {
+      background: #ffffff !important;
+    }
+
+    /* ── LOADING STATE ── */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      font-size: 14px;
+      color: var(--muted);
+      gap: 10px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(13, 148, 136, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── TOOLTIP ── */
+    .tooltip-overlay {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 50;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      animation: slideUp 0.3s ease-out;
+      backdrop-filter: blur(8px);
+      white-space: nowrap;
+    }
+
+    .tooltip-overlay strong {
+      color: var(--primary);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* ── LEGEND PANEL ── */
+    .legend-panel {
+      position: fixed;
+      top: 68px;
+      right: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      min-width: 220px;
+      z-index: 200;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+      display: none;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .legend-panel.visible {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .legend-panel h4 {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .legend-label {
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .legend-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 12px 0;
+    }
+
+    .legend-tips {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .legend-tip {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-tip::before {
+      content: "›";
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .header-title { display: none; }
+      button { padding: 6px 10px; }
+      .legend-panel { right: 8px; left: 8px; min-width: unset; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <div class="header-badge">ISTQB CTFL v4.0.1</div>
+      <div class="header-title">Interactive Mind Map</div>
+    </div>
+    <div class="header-controls">
+      <button id="zoom-in" title="Zoom In (+)">+ Zoom</button>
+      <button id="zoom-out" title="Zoom Out (-)">− Zoom</button>
+      <button id="fit-view" title="Fit to screen">Fit</button>
+      <button id="toggle-legend" title="Toggle Chapter Legend">Legend</button>
+    </div>
+  </header>
+
+  <div class="markmap-wrapper">
+    <div class="markmap">
+      <script type="text/template">
+---
+markmap:
+  colorFreezeLevel: 2
+  initialExpandLevel: 2
+  maxNodeWidth: 160
+---
+# ISTQB CTFL v4.0.1
+
+## 1. Fundamentals of Testing
+### Why Testing is Needed
+#### Error → Defect → Failure
+#### Cost of finding bugs early vs. late
+### Seven Testing Principles
+#### 1. Testing shows presence of defects
+#### 2. Exhaustive testing is impossible
+#### 3. Early testing saves cost and time
+#### 4. Defect clustering (Pareto principle)
+#### 5. Pesticide paradox
+#### 6. Testing is context-dependent
+#### 7. Absence-of-errors fallacy
+### Test Activities and Roles
+#### Test planning
+#### Test analysis & design
+#### Test implementation & execution
+#### Test completion
+### Testware
+#### Test plans
+#### Test cases
+#### Test data
+#### Test scripts
+#### Defect reports
+### Key Roles
+#### Test Manager
+#### Tester
+#### Quality Assurance Engineer
+### Testing Skills & Practices
+#### Whole-team approach
+#### Independence of testing
+
+## 2. Testing in SDLC
+### SDLC Models
+#### Sequential
+##### Waterfall
+##### V-model
+#### Iterative & Incremental
+#### Agile
+##### Scrum
+##### Kanban
+### Shift-Left Testing
+#### Early test planning
+#### Continuous testing
+### Test Levels
+#### Component (Unit) Testing
+#### Component Integration Testing
+#### System Testing
+#### System Integration Testing
+#### Acceptance Testing
+##### UAT
+##### Alpha Testing
+##### Beta Testing
+### Test Types
+#### Functional Testing
+##### Specification-based
+#### Non-functional Testing
+##### Performance
+##### Security
+##### Usability
+##### Reliability
+#### Structural (White-box) Testing
+#### Regression Testing
+#### Confirmation Testing
+### Maintenance Testing
+
+## 3. Static Testing
+### Static vs. Dynamic Testing
+#### Static: No code execution
+#### Dynamic: Code execution
+### Review Process
+#### Planning & preparation
+#### Review initiation
+#### Individual review
+#### Communication & analysis
+#### Fixing & reporting
+### Review Types
+#### Informal review
+##### Ad hoc
+##### Peer review
+#### Walkthrough
+#### Technical review
+#### Inspection (most formal)
+### Static Analysis Tools
+#### Linters
+#### SonarQube
+#### Code smell detection
+#### Complexity analysis
+
+## 4. Test Design & Analysis
+### Black-box Techniques
+#### Equivalence Partitioning (EP)
+##### Valid partitions
+##### Invalid partitions
+##### Boundary cases
+#### Boundary Value Analysis (BVA)
+##### 2-value BVA
+##### 3-value BVA
+#### Decision Table Testing
+#### State Transition Testing
+#### Use Case Testing
+### White-box Techniques
+#### Statement Coverage
+#### Branch Coverage
+#### Path Coverage
+#### Data flow coverage
+### Experience-based Techniques
+#### Error Guessing
+#### Exploratory Testing
+##### Test charter
+##### Session-based testing
+##### Timeboxed approach
+#### Checklist-based Testing
+### Collaborative Approaches
+#### BDD (Given-When-Then)
+#### ATDD
+#### Story-based Testing
+
+## 5. Test Management
+### Test Planning & Estimation
+#### Scope & objectives
+#### Success criteria
+#### Metric-based estimation
+#### Expert-based estimation
+##### Planning Poker
+##### Wideband Delphi
+### Risk-based Testing
+#### Product risks
+#### Project risks
+#### Risk matrix (Likelihood × Impact)
+#### Risk prioritization
+### Test Monitoring & Control
+#### Metrics & KPIs
+#### Coverage tracking
+#### Progress reporting
+#### Exit criteria
+### Defect Management
+#### Defect reporting
+#### Severity levels
+#### Priority levels
+#### Defect tracking
+#### Defect closure
+### Configuration Management
+#### Version control
+#### Test environment tracking
+
+## 6. Test Tools
+### Tool Categories
+#### Test management (Jira, TestRail)
+#### Test design & generation
+#### Test execution
+#### CI/CD integration
+#### Performance testing (JMeter, LoadRunner)
+#### Security testing
+#### Test analysis & automation
+### Test Automation
+#### Automation scope
+#### Benefits & limitations
+#### ROI considerations
+#### CI/CD integration
+#### Framework selection
+### Tool Adoption Principles
+#### Identify opportunities
+#### Evaluate tools
+#### Pilot project
+#### Training & support
+#### Gradual rollout
+      </script>
+    </div>
+  </div>
+
+  <!-- Legend Panel -->
+  <div class="legend-panel" id="legendPanel">
+    <h4>Chapter Colors</h4>
+    <div class="legend-item"><div class="legend-dot" style="background:#4f6ef7"></div><div class="legend-label">1. Fundamentals</div></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#2eb88a"></div><div class="legend-label">2. Testing in SDLC</div></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e78a1e"></div><div class="legend-label">3. Static Testing</div></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e24444"></div><div class="legend-label">4. Test Design</div></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#9e5cf7"></div><div class="legend-label">5. Test Management</div></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1aafdc"></div><div class="legend-label">6. Test Tools</div></div>
+    <div class="legend-divider"></div>
+    <div class="legend-tips">
+      <div class="legend-tip">Drag to pan the map</div>
+      <div class="legend-tip">Scroll to zoom in/out</div>
+      <div class="legend-tip">Click nodes to expand/collapse</div>
+      <div class="legend-tip">Level 2 = colorFreezeLevel</div>
+    </div>
+  </div>
+
+  <!-- Usage tooltip -->
+  <div id="tooltip" class="tooltip-overlay">
+    <strong>Tip:</strong> Drag to pan · Scroll to zoom · Click nodes to expand/collapse
+  </div>
+
+  <script>
+    // Auto-dismiss tooltip
+    window.addEventListener('load', function () {
+      const tooltip = document.getElementById('tooltip');
+      tooltip.style.display = 'block';
+      setTimeout(function () {
+        tooltip.style.transition = 'opacity 0.5s ease';
+        tooltip.style.opacity = '0';
+        setTimeout(function () { tooltip.style.display = 'none'; }, 500);
+      }, 4500);
+    });
+
+    // Legend toggle
+    document.getElementById('toggle-legend').addEventListener('click', function () {
+      const panel = document.getElementById('legendPanel');
+      panel.classList.toggle('visible');
+    });
+
+    // Close legend when clicking outside
+    document.addEventListener('click', function (e) {
+      const panel = document.getElementById('legendPanel');
+      const btn = document.getElementById('toggle-legend');
+      if (panel.classList.contains('visible') && !panel.contains(e.target) && e.target !== btn) {
+        panel.classList.remove('visible');
+      }
+    });
+
+    // Zoom controls — access markmap instance after render
+    function getMarkmapInstance() {
+      // markmap-autoloader attaches the instance to the SVG element
+      const svg = document.querySelector('.markmap svg');
+      if (!svg) return null;
+      // Try common access patterns
+      if (svg.__markmap) return svg.__markmap;
+      if (svg._markmap) return svg._markmap;
+      return null;
+    }
+
+    document.getElementById('zoom-in').addEventListener('click', function () {
+      const mm = getMarkmapInstance();
+      if (mm && typeof mm.rescale === 'function') {
+        mm.rescale(1.25);
+      }
+    });
+
+    document.getElementById('zoom-out').addEventListener('click', function () {
+      const mm = getMarkmapInstance();
+      if (mm && typeof mm.rescale === 'function') {
+        mm.rescale(0.8);
+      }
+    });
+
+    document.getElementById('fit-view').addEventListener('click', function () {
+      const mm = getMarkmapInstance();
+      if (mm && typeof mm.fit === 'function') {
+        mm.fit();
+      }
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function (e) {
+      if (e.key === '+' || e.key === '=') {
+        document.getElementById('zoom-in').click();
+      } else if (e.key === '-') {
+        document.getElementById('zoom-out').click();
+      } else if (e.key === '0' || e.key === 'f') {
+        document.getElementById('fit-view').click();
+      } else if (e.key === 'l' || e.key === 'L') {
+        document.getElementById('toggle-legend').click();
+      }
+    });
+
+    // Check CDN load
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
+        if (typeof window.markmap === 'undefined') {
+          document.querySelector('.markmap-wrapper').innerHTML =
+            '<div class="loading"><span class="spinner"></span>Loading mind map library…</div>';
+        }
+      }, 4000);
+    });
+  </script>
+</body>
+</html>

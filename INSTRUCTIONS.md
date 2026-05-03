@@ -1,6 +1,6 @@
 # Hướng dẫn chạy ứng dụng
 
-Để chạy ứng dụng này, bạn cần một web server đơn giản để phục vụ các file. Dưới đây là một vài cách để làm điều đó:
+Ứng dụng nằm trong thư mục **PSM Certification/**. Để chạy, bạn cần một web server đơn giản:
 
 ## Cách 1: Sử dụng `live-server` (yêu cầu Node.js)
 
@@ -11,7 +11,7 @@
     ```
 3.  Di chuyển đến thư mục của ứng dụng:
     ```bash
-    cd "/Users/chungnguyen/Documents/PSM I & II Materials/App luyện thi"
+    cd "/Users/chungnguyen/Documents/PSM I & II Materials/App luyện thi/PSM Certification"
     ```
 4.  Chạy `live-server`:
     ```bash
@@ -26,7 +26,7 @@ Nếu bạn đã cài đặt Python, bạn có thể sử dụng module `http.se
 1.  Mở terminal của bạn.
 2.  Di chuyển đến thư mục của ứng dụng:
     ```bash
-    cd "/Users/chungnguyen/Documents/PSM I & II Materials/App luyện thi"
+    cd "/Users/chungnguyen/Documents/PSM I & II Materials/App luyện thi/PSM Certification"
     ```
 3.  Chạy web server:
 
