@@ -170,6 +170,24 @@
         </div>
       </button>
 
+      <!-- CT-GenAI -->
+      <button class="card" id="card-genai"
+        style="border-color: rgba(99,102,241,.3);"
+        onmouseover="this.style.borderColor='rgba(99,102,241,.6)'"
+        onmouseout="this.style.borderColor='rgba(99,102,241,.3)'"
+        onclick="openModal('genai')">
+        <div class="card-inner">
+          <div class="card-icon" style="background: rgba(99,102,241,.15); border: 1.5px solid rgba(99,102,241,.3);">🤖</div>
+          <div class="card-body">
+            <div class="card-label" style="color: #6366F1;">ISTQB</div>
+            <div class="card-title">CT-GenAI v1.1</div>
+            <div class="card-desc">Testing with Generative AI — 5 chương, 32 câu hỏi, flashcard từ khóa</div>
+            <span class="badge" style="background: rgba(99,102,241,.15); color: #6366F1;">MỚI</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </div>
+      </button>
+
       <!-- PSM Certification -->
       <button class="card" id="card-psm"
         style="border-color: rgba(124,58,237,.3);"
@@ -219,6 +237,7 @@
     const PASSWORDS = {
       istqb: '095029fe10fd2387e1dc6b74c74844352f450500a2bfc3a82b2d06fb39d2f2e4', // "istqb"
       psm:   '3cf27f7408755a5e12b08812b22ad88cb17322b52a61e3fabd93f2e9efef5668', // "psm"
+      genai: 'c46a930815e01956b23cc75677837827d713d6042ca1f0b7f0d706cb70b4a405', // "genai"
     };
 
     const COURSES = {
@@ -235,6 +254,13 @@
         color: '#7C3AED',
         bg: 'rgba(124,58,237,.12)',
         url: 'PSM Certification/index.html',
+      },
+      genai: {
+        title: 'CT-GenAI Testing with AI',
+        icon: '🤖',
+        color: '#6366F1',
+        bg: 'rgba(99,102,241,.15)',
+        url: 'ISTQB Gen-AI/index.html',
       },
     };
 
