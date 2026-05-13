@@ -11,12 +11,12 @@ function shuffle(arr) {
 }
 
 function loadProgress() {
-  try { return JSON.parse(localStorage.getItem('istqb_progress') || '{}'); }
+  try { return JSON.parse(localStorage.getItem('genai_progress') || '{}'); }
   catch { return {}; }
 }
 
 function saveProgress(p) {
-  localStorage.setItem('istqb_progress', JSON.stringify(p));
+  localStorage.setItem('genai_progress', JSON.stringify(p));
 }
 
 // ─── SVG icons ───────────────────────────────────────────────────────────────
@@ -69,6 +69,13 @@ const IconWarning = () => (
     <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
   </svg>
 );
+const IconBrain = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M9.5 2a2.5 2.5 0 0 1 5 0v.5A2.5 2.5 0 0 1 12 5a2.5 2.5 0 0 1-2.5-2.5V2z"/>
+    <path d="M9 5a5 5 0 0 0-5 5v2a5 5 0 0 0 5 5h6a5 5 0 0 0 5-5v-2a5 5 0 0 0-5-5"/>
+    <path d="M12 5v14"/><path d="M7 10h10"/><path d="M7 14h10"/>
+  </svg>
+);
 
 // ─── Chapter Card ────────────────────────────────────────────────────────────
 function ChapterCard({ chapter, progress, onStudy, onFlashcards, onQuiz }) {
@@ -87,20 +94,28 @@ function ChapterCard({ chapter, progress, onStudy, onFlashcards, onQuiz }) {
   return (
     <div style={{
       background: 'var(--surface)',
-      border: '1px solid var(--border)',
+      border: `1px solid ${chapter.color}22`,
       borderRadius: '16px',
       padding: '20px',
       display: 'flex',
       flexDirection: 'column',
       gap: '12px',
       height: '100%',
-      transition: 'transform .2s, box-shadow .2s',
+      transition: 'transform .2s, box-shadow .2s, border-color .2s',
       cursor: 'default',
     }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,.4)'; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = 'translateY(-2px)';
+        e.currentTarget.style.boxShadow = `0 8px 24px rgba(0,0,0,.4)`;
+        e.currentTarget.style.borderColor = chapter.color + '55';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = '';
+        e.currentTarget.style.boxShadow = '';
+        e.currentTarget.style.borderColor = chapter.color + '22';
+      }}
     >
-      {/* header — number chip instead of emoji */}
+      {/* header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
         <div style={{
           width: '44px', height: '44px', borderRadius: '12px', flexShrink: 0,
@@ -124,7 +139,7 @@ function ChapterCard({ chapter, progress, onStudy, onFlashcards, onQuiz }) {
         </div>
       </div>
 
-      {/* meta badges — text only, no emoji icons */}
+      {/* meta badges */}
       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
         <span style={{ fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '6px', background: 'rgba(96,165,250,.12)', color: '#60A5FA', border: '1px solid rgba(96,165,250,.18)' }}>
           {totalKW} từ khóa
@@ -155,10 +170,9 @@ function ChapterCard({ chapter, progress, onStudy, onFlashcards, onQuiz }) {
         </div>
       )}
 
-      {/* spacer — pins actions to card bottom */}
       <div style={{ flex: 1 }} />
 
-      {/* actions — equal-width grid, no wrapping */}
+      {/* actions */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px' }}>
         <button onClick={() => onStudy(chapter.id)} style={{
           ...btnBase, border: '1px solid var(--border)',
@@ -185,7 +199,7 @@ function ChapterCard({ chapter, progress, onStudy, onFlashcards, onQuiz }) {
 
 // ─── Home View ────────────────────────────────────────────────────────────────
 function HomeView({ progress, onStudy, onFlashcards, onQuiz, onGlobalQuiz }) {
-  const chapters = ISTQB_DATA.chapters;
+  const chapters = GENAI_DATA.chapters;
   const totalQ   = chapters.reduce((s, c) => s + c.questions.length, 0);
   const totalKW  = chapters.reduce((s, c) => s + c.keywords.length, 0);
 
@@ -201,29 +215,30 @@ function HomeView({ progress, onStudy, onFlashcards, onQuiz, onGlobalQuiz }) {
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 16px 60px' }}>
       {/* hero */}
       <div style={{
-        background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 50%, #134e4a 100%)',
+        background: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #6D28D9 100%)',
         borderRadius: '20px', padding: '32px 28px', marginBottom: '32px',
         position: 'relative', overflow: 'hidden',
       }}>
-        <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '180px', height: '180px', borderRadius: '50%', background: 'rgba(255,255,255,.05)' }} />
-        <div style={{ position: 'absolute', bottom: '-40px', right: '60px', width: '120px', height: '120px', borderRadius: '50%', background: 'rgba(255,255,255,.03)' }} />
+        {/* decorative circles */}
+        <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,.06)' }} />
+        <div style={{ position: 'absolute', bottom: '-50px', right: '80px', width: '150px', height: '150px', borderRadius: '50%', background: 'rgba(255,255,255,.04)' }} />
+        <div style={{ position: 'absolute', top: '20px', right: '120px', width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,.04)' }} />
         <div style={{ position: 'relative' }}>
-          <div style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255,255,255,.7)', letterSpacing: '.08em', marginBottom: '8px' }}>
-            ISTQB CERTIFIED TESTER
+          <div style={{ fontSize: '11px', fontWeight: 700, color: 'rgba(255,255,255,.7)', letterSpacing: '.1em', marginBottom: '8px' }}>
+            ISTQB SPECIALIST LEVEL · CT-GenAI v1.1
           </div>
           <h1 style={{ fontSize: '26px', fontWeight: 800, color: 'white', margin: 0, lineHeight: 1.2 }}>
-            Foundation Level v4.0.1
+            Testing with Generative AI
           </h1>
           <p style={{ color: 'rgba(255,255,255,.8)', margin: '8px 0 20px', fontSize: '14px' }}>
-            Ôn tập luyện thi CTFL — 6 chương, {totalQ} câu hỏi, {totalKW} từ khóa
+            Ôn tập luyện thi CT-GenAI — 5 chương, {totalQ} câu hỏi, {totalKW} từ khóa
           </p>
-
-          {/* stats row */}
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
             {[
-              { label: 'Chương', value: '6' },
+              { label: 'Chương', value: '5' },
               { label: 'Câu hỏi', value: totalQ },
               { label: 'Từ khóa', value: totalKW },
+              { label: 'Thời lượng', value: '815ph' },
               ...(avgScore !== null ? [{ label: 'Avg Score', value: `${avgScore}%` }] : []),
             ].map((s, i) => (
               <div key={i} style={{ background: 'rgba(255,255,255,.12)', borderRadius: '10px', padding: '8px 14px' }}>
@@ -256,21 +271,21 @@ function HomeView({ progress, onStudy, onFlashcards, onQuiz, onGlobalQuiz }) {
           background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px',
           padding: '14px 18px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px',
         }}>
-          <IconTrophy />
+          <span style={{ color: '#6366F1' }}><IconTrophy /></span>
           <span style={{ fontSize: '14px', color: 'var(--muted)' }}>
-            Đã hoàn thành quiz: <strong style={{ color: 'var(--text)' }}>{doneQuizzes}/6 chương</strong>
+            Đã hoàn thành quiz: <strong style={{ color: 'var(--text)' }}>{doneQuizzes}/5 chương</strong>
             {avgScore !== null && <> — điểm trung bình <strong style={{ color: avgScore >= 70 ? 'var(--success)' : 'var(--accent)' }}>{avgScore}%</strong></>}
           </span>
         </div>
       )}
 
       {/* study tools row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '28px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '10px', marginBottom: '28px' }}>
         {[
           {
-            label: 'Ôn tập kiến thức', sub: '6 chương chi tiết',
-            color: '#0D9488', bg: 'rgba(13,148,136,.1)', border: 'rgba(13,148,136,.22)',
-            href: 'ctfl-ontap-kienthuc.html',
+            label: 'Ôn tập kiến thức', sub: '5 chương chi tiết',
+            color: '#6366F1', bg: 'rgba(99,102,241,.1)', border: 'rgba(99,102,241,.22)',
+            href: '../ISTQB Gen-AI/GenAI-OnTapKienThuc/00-README.md',
             icon: (
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
@@ -278,48 +293,50 @@ function HomeView({ progress, onStudy, onFlashcards, onQuiz, onGlobalQuiz }) {
             ),
           },
           {
-            label: 'Mind Map', sub: 'Sơ đồ tư duy CTFL',
-            color: '#A78BFA', bg: 'rgba(167,139,250,.1)', border: 'rgba(167,139,250,.22)',
-            href: 'ctfl-mind-map.html',
+            label: 'Sample Exam A', sub: '40 câu giải thích',
+            color: '#EC4899', bg: 'rgba(236,72,153,.1)', border: 'rgba(236,72,153,.22)',
+            href: '../ISTQB Gen-AI/CT-GenAI-Sample-Exam-A-Giai-Thich.md',
             icon: (
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="3"/>
-                <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.64 5.64l2.12 2.12M16.24 16.24l2.12 2.12M5.64 18.36l2.12-2.12M16.24 7.76l2.12-2.12"/>
+                <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
               </svg>
             ),
           },
           {
-            label: 'Lịch học', sub: 'Kế hoạch ôn tập',
-            color: '#34D399', bg: 'rgba(52,211,153,.1)', border: 'rgba(52,211,153,.22)',
-            href: 'ctfl-study-schedule.html',
+            label: 'Tổng hợp kiến thức', sub: 'CT-GenAI v1.1',
+            color: '#06B6D4', bg: 'rgba(6,182,212,.1)', border: 'rgba(6,182,212,.22)',
+            href: '../ISTQB Gen-AI/CT-GenAI-Tong-Hop-Kien-Thuc.md',
             icon: (
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
+                <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+                <line x1="8" y1="18" x2="21" y2="18"/>
+                <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/>
+                <line x1="3" y1="18" x2="3.01" y2="18"/>
               </svg>
             ),
           },
         ].map((t, i) => (
-          <a key={i} href={t.href} style={{
-            display: 'flex', alignItems: 'center', gap: '10px',
-            padding: '12px 14px', borderRadius: '12px', textDecoration: 'none',
-            background: t.bg, border: `1px solid ${t.border}`,
-            transition: 'transform .15s, box-shadow .15s', cursor: 'pointer',
-          }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,.3)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
+          <div key={i}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '10px',
+              padding: '12px 14px', borderRadius: '12px', textDecoration: 'none',
+              background: t.bg, border: `1px solid ${t.border}`,
+              transition: 'transform .15s, box-shadow .15s', cursor: 'default',
+            }}
           >
             <span style={{ color: t.color, flexShrink: 0, display: 'flex' }}>{t.icon}</span>
             <div style={{ minWidth: 0 }}>
               <div style={{ fontSize: '13px', fontWeight: 700, color: t.color, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.label}</div>
               <div style={{ fontSize: '11px', color: 'var(--muted)' }}>{t.sub}</div>
             </div>
-          </a>
+          </div>
         ))}
       </div>
 
       {/* chapter grid */}
+      <h2 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--muted)', letterSpacing: '.06em', marginBottom: '16px' }}>
+        5 CHƯƠNG HỌC
+      </h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px' }}>
         {chapters.map(ch => (
           <ChapterCard
@@ -338,7 +355,7 @@ function HomeView({ progress, onStudy, onFlashcards, onQuiz, onGlobalQuiz }) {
 
 // ─── Study View ───────────────────────────────────────────────────────────────
 function StudyView({ chapterId, onBack }) {
-  const chapter = ISTQB_DATA.chapters.find(c => c.id === chapterId);
+  const chapter = GENAI_DATA.chapters.find(c => c.id === chapterId);
   const [tab, setTab] = useState('keywords');
   const [expanded, setExpanded] = useState({});
 
@@ -351,7 +368,6 @@ function StudyView({ chapterId, onBack }) {
 
   return (
     <div style={{ maxWidth: '760px', margin: '0 auto', padding: '0 16px 60px' }}>
-      {/* header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
         <button onClick={onBack} style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '8px', padding: '8px 12px', color: 'var(--text)', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
           <IconBack /> Trở về
@@ -362,7 +378,6 @@ function StudyView({ chapterId, onBack }) {
         </div>
       </div>
 
-      {/* tabs */}
       <div style={{ display: 'flex', gap: '4px', background: 'var(--surface)', borderRadius: '10px', padding: '4px', marginBottom: '20px', border: '1px solid var(--border)' }}>
         {tabs.map(t => (
           <button key={t.key} onClick={() => setTab(t.key)} style={{
@@ -374,7 +389,6 @@ function StudyView({ chapterId, onBack }) {
         ))}
       </div>
 
-      {/* keywords */}
       {tab === 'keywords' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {chapter.keywords.map((kw, i) => (
@@ -402,7 +416,6 @@ function StudyView({ chapterId, onBack }) {
         </div>
       )}
 
-      {/* traps */}
       {tab === 'traps' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {chapter.traps.map((trap, i) => (
@@ -410,7 +423,7 @@ function StudyView({ chapterId, onBack }) {
               background: 'var(--surface)', border: '1px solid rgba(245,158,11,.3)', borderRadius: '12px', padding: '16px',
             }}>
               <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', marginBottom: '10px' }}>
-                <span style={{ fontSize: '16px', flexShrink: 0 }}><IconWarning /></span>
+                <span style={{ color: '#F59E0B', flexShrink: 0 }}><IconWarning /></span>
                 <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--accent)' }}>{trap.title}</span>
               </div>
               <p style={{ color: 'var(--muted)', fontSize: '13px', margin: 0, lineHeight: 1.6, paddingLeft: '26px' }}>{trap.correct}</p>
@@ -424,7 +437,7 @@ function StudyView({ chapterId, onBack }) {
 
 // ─── Flashcards View ──────────────────────────────────────────────────────────
 function FlashcardsView({ chapterId, onBack }) {
-  const chapter  = ISTQB_DATA.chapters.find(c => c.id === chapterId);
+  const chapter  = GENAI_DATA.chapters.find(c => c.id === chapterId);
   const cards    = useMemo(() => shuffle(chapter.keywords), [chapterId]);
   const [idx, setIdx]     = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -440,7 +453,6 @@ function FlashcardsView({ chapterId, onBack }) {
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 16px 60px' }}>
-      {/* header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
         <button onClick={onBack} style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '8px', padding: '8px 12px', color: 'var(--text)', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
           <IconBack /> Trở về
@@ -451,7 +463,6 @@ function FlashcardsView({ chapterId, onBack }) {
         </div>
       </div>
 
-      {/* progress */}
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: 'var(--muted)', marginBottom: '6px' }}>
         <span>{idx + 1} / {total}</span>
         <span style={{ color: 'var(--success)' }}>Đã thuộc: {knownN}/{total}</span>
@@ -460,7 +471,6 @@ function FlashcardsView({ chapterId, onBack }) {
         <div style={{ height: '100%', width: `${((idx + 1) / total) * 100}%`, background: chapter.color, borderRadius: '4px', transition: 'width .3s' }} />
       </div>
 
-      {/* card */}
       <div
         onClick={() => setFlipped(f => !f)}
         style={{
@@ -490,13 +500,12 @@ function FlashcardsView({ chapterId, onBack }) {
         )}
       </div>
 
-      {/* controls */}
       <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
         <button onClick={prev} style={{ flex: 1, padding: '12px', borderRadius: '10px', border: '1px solid var(--border)', background: 'var(--surface-2)', color: 'var(--text)', fontWeight: 600, cursor: 'pointer', fontSize: '14px' }}>
           ← Trước
         </button>
         {flipped && (
-          <button onClick={markKnown} style={{ flex: 1, padding: '12px', borderRadius: '10px', border: 'none', background: 'var(--success)', color: 'white', fontWeight: 700, cursor: 'pointer', fontSize: '14px' }}>
+          <button onClick={markKnown} style={{ flex: 1, padding: '12px', borderRadius: '10px', border: 'none', background: 'var(--success)', color: 'white', fontWeight: 700, cursor: 'pointer', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
             <IconCheck /> Đã thuộc
           </button>
         )}
@@ -512,9 +521,9 @@ function FlashcardsView({ chapterId, onBack }) {
 function QuizView({ chapterId, onBack, onComplete }) {
   const questions = useMemo(() => {
     if (chapterId === 'all') {
-      return shuffle(ISTQB_DATA.chapters.flatMap(c => c.questions));
+      return shuffle(GENAI_DATA.chapters.flatMap(c => c.questions));
     }
-    return shuffle(ISTQB_DATA.chapters.find(c => c.id === chapterId).questions);
+    return shuffle(GENAI_DATA.chapters.find(c => c.id === chapterId).questions);
   }, [chapterId]);
 
   const [qi, setQi]             = useState(0);
@@ -524,8 +533,8 @@ function QuizView({ chapterId, onBack, onComplete }) {
 
   const q         = questions[qi];
   const isLast    = qi === questions.length - 1;
-  const chapter   = chapterId === 'all' ? null : ISTQB_DATA.chapters.find(c => c.id === chapterId);
-  const accentColor = chapter ? chapter.color : '#0D9488';
+  const chapter   = chapterId === 'all' ? null : GENAI_DATA.chapters.find(c => c.id === chapterId);
+  const accentColor = chapter ? chapter.color : '#6366F1';
 
   const confirm = () => {
     if (!selected) return;
@@ -563,14 +572,13 @@ function QuizView({ chapterId, onBack, onComplete }) {
 
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto', padding: '0 16px 60px' }}>
-      {/* header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
         <button onClick={onBack} style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '8px', padding: '8px 12px', color: 'var(--text)', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
           <IconBack /> Thoát
         </button>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: '12px', color: 'var(--muted)', fontWeight: 600 }}>
-            {chapterId === 'all' ? 'THI THỬ TỔNG HỢP' : `CHƯƠNG ${chapterId}`}
+            {chapterId === 'all' ? 'THI THỬ TỔNG HỢP CT-GenAI' : `CHƯƠNG ${chapterId}`}
           </div>
           <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text)' }}>
             Câu {qi + 1} / {questions.length}
@@ -581,18 +589,15 @@ function QuizView({ chapterId, onBack, onComplete }) {
         </div>
       </div>
 
-      {/* progress bar */}
       <div style={{ height: '4px', background: 'var(--surface-2)', borderRadius: '4px', marginBottom: '24px', overflow: 'hidden' }}>
         <div style={{ height: '100%', width: `${((qi) / questions.length) * 100}%`, background: accentColor, transition: 'width .3s' }} />
       </div>
 
-      {/* question */}
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px', marginBottom: '16px' }}>
         <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--muted)', letterSpacing: '.08em', marginBottom: '12px' }}>CÂU HỎI {qi + 1}</div>
         <p style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', margin: 0, lineHeight: 1.6 }}>{q.text}</p>
       </div>
 
-      {/* choices */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
         {q.choices.map(ch => (
           <button key={ch.key} onClick={() => !confirmed && setSelected(ch.key)} style={choiceStyle(ch.key)}>
@@ -611,7 +616,6 @@ function QuizView({ chapterId, onBack, onComplete }) {
         ))}
       </div>
 
-      {/* explanation */}
       {confirmed && (
         <div style={{
           background: selected === q.correctAnswer ? 'rgba(16,185,129,.1)' : 'rgba(239,68,68,.08)',
@@ -628,7 +632,6 @@ function QuizView({ chapterId, onBack, onComplete }) {
         </div>
       )}
 
-      {/* action */}
       {!confirmed ? (
         <button onClick={confirm} disabled={!selected} style={{
           width: '100%', padding: '14px', borderRadius: '12px', border: 'none',
@@ -650,26 +653,24 @@ function QuizView({ chapterId, onBack, onComplete }) {
 function ResultsView({ chapterId, score, total, onRetry, onHome }) {
   const pct = Math.round((score / total) * 100);
   const pass = pct >= 70;
-  const chapter = chapterId !== 'all' ? ISTQB_DATA.chapters.find(c => c.id === chapterId) : null;
-  const color   = chapter ? chapter.color : '#0D9488';
+  const chapter = chapterId !== 'all' ? GENAI_DATA.chapters.find(c => c.id === chapterId) : null;
+  const color   = chapter ? chapter.color : '#6366F1';
 
   const getMessage = () => {
-    if (pct >= 90) return { emoji: '🎉', text: 'Xuất sắc! Bạn đã nắm rất chắc kiến thức chương này.' };
-    if (pct >= 70) return { emoji: '✅', text: 'Tốt! Bạn đã hiểu phần lớn nội dung. Hãy ôn lại những câu sai.' };
-    if (pct >= 50) return { emoji: '📚', text: 'Cần cải thiện thêm. Hãy đọc lại lý thuyết và làm lại.' };
-    return { emoji: '💪', text: 'Hãy ôn lại từ đầu. Đừng nản lòng — học lại và thử lại!' };
+    if (pct >= 90) return { icon: '🎉', text: 'Xuất sắc! Bạn đã nắm rất chắc kiến thức chương này.' };
+    if (pct >= 70) return { icon: '✅', text: 'Tốt! Bạn đã hiểu phần lớn nội dung. Hãy ôn lại những câu sai.' };
+    if (pct >= 50) return { icon: '📚', text: 'Cần cải thiện thêm. Hãy đọc lại lý thuyết và làm lại.' };
+    return { icon: '💪', text: 'Hãy ôn lại từ đầu. Đừng nản lòng — học lại và thử lại!' };
   };
   const msg = getMessage();
 
   return (
     <div style={{ maxWidth: '480px', margin: '0 auto', padding: '40px 16px 60px', textAlign: 'center' }}>
-      {/* score circle */}
       <div style={{ marginBottom: '24px' }}>
         <div style={{
           width: '140px', height: '140px', borderRadius: '50%', margin: '0 auto 16px',
           background: `conic-gradient(${pass ? '#10B981' : '#F59E0B'} ${pct * 3.6}deg, var(--surface-2) 0deg)`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          position: 'relative',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',
         }}>
           <div style={{
             width: '110px', height: '110px', borderRadius: '50%', background: 'var(--bg)',
@@ -680,14 +681,13 @@ function ResultsView({ chapterId, score, total, onRetry, onHome }) {
           </div>
         </div>
 
-        <div style={{ fontSize: '32px', marginBottom: '8px' }}>{msg.emoji}</div>
+        <div style={{ fontSize: '32px', marginBottom: '8px' }}>{msg.icon}</div>
         <h2 style={{ fontSize: '22px', fontWeight: 800, color: pass ? '#6EE7B7' : 'var(--accent)', margin: '0 0 8px' }}>
           {pass ? 'Đạt!' : 'Chưa đạt'}
         </h2>
         <p style={{ color: 'var(--muted)', fontSize: '14px', margin: 0 }}>{msg.text}</p>
       </div>
 
-      {/* stats */}
       <div style={{ display: 'flex', gap: '12px', marginBottom: '28px' }}>
         {[
           { label: 'Đúng', value: score, color: '#10B981' },
@@ -701,7 +701,6 @@ function ResultsView({ chapterId, score, total, onRetry, onHome }) {
         ))}
       </div>
 
-      {/* buttons */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         <button onClick={onRetry} style={{ padding: '14px', borderRadius: '12px', border: 'none', background: color, color: 'white', fontWeight: 700, fontSize: '15px', cursor: 'pointer' }}>
           Làm lại
@@ -760,30 +759,51 @@ function App() {
         borderBottom: '1px solid var(--border)', padding: '12px 20px',
         display: 'flex', alignItems: 'center', gap: '12px',
       }}>
-        <button onClick={goHome} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-          <span style={{ fontSize: '20px' }}>📋</span>
+        <button onClick={goHome} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{
+            width: '32px', height: '32px', borderRadius: '8px',
+            background: 'linear-gradient(135deg, #6366F1, #8B5CF6)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <IconBrain />
+          </div>
           <div style={{ textAlign: 'left' }}>
-            <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--primary)', letterSpacing: '.06em' }}>ISTQB CTFL</div>
-            <div style={{ fontSize: '10px', color: 'var(--muted)', fontWeight: 500 }}>v4.0.1 — Ôn luyện thi</div>
+            <div style={{ fontSize: '12px', fontWeight: 800, color: '#6366F1', letterSpacing: '.06em' }}>CT-GenAI</div>
+            <div style={{ fontSize: '10px', color: 'var(--muted)', fontWeight: 500 }}>v1.1 — Ôn luyện thi</div>
           </div>
         </button>
 
         <div style={{ flex: 1 }} />
 
-        {view !== 'home' && (
-          <button onClick={goHome} style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '8px', padding: '6px 12px', color: 'var(--muted)', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
-            Trang chủ
-          </button>
-        )}
+        <a href="../index.html" style={{
+          fontSize: '12px', color: 'var(--muted)', textDecoration: 'none', fontWeight: 600,
+          padding: '6px 10px', borderRadius: '6px', background: 'var(--surface-2)',
+          border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '4px',
+        }}>
+          ← Trang chủ
+        </a>
       </header>
 
-      {/* main */}
-      <main style={{ padding: '24px 16px 0' }}>
-        {view === 'home'       && <HomeView progress={progress} onStudy={goStudy} onFlashcards={goFlashcards} onQuiz={goQuiz} onGlobalQuiz={goGlobalQuiz} />}
-        {view === 'study'      && <StudyView chapterId={chapterId} onBack={goHome} />}
-        {view === 'flashcards' && <FlashcardsView chapterId={chapterId} onBack={goHome} />}
-        {view === 'quiz'       && <QuizView chapterId={chapterId} onBack={goHome} onComplete={handleQuizComplete} />}
-        {view === 'results'    && quizResult && (
+      <main style={{ padding: '32px 16px 0' }}>
+        {view === 'home' && (
+          <HomeView
+            progress={progress}
+            onStudy={goStudy}
+            onFlashcards={goFlashcards}
+            onQuiz={goQuiz}
+            onGlobalQuiz={goGlobalQuiz}
+          />
+        )}
+        {view === 'study' && (
+          <StudyView chapterId={chapterId} onBack={goHome} />
+        )}
+        {view === 'flashcards' && (
+          <FlashcardsView chapterId={chapterId} onBack={goHome} />
+        )}
+        {view === 'quiz' && (
+          <QuizView chapterId={chapterId} onBack={goHome} onComplete={handleQuizComplete} />
+        )}
+        {view === 'results' && quizResult && (
           <ResultsView
             chapterId={quizResult.chapterId}
             score={quizResult.score}
@@ -797,5 +817,6 @@ function App() {
   );
 }
 
+// ─── Mount ────────────────────────────────────────────────────────────────────
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
