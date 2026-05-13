@@ -535,7 +535,8 @@ function QuizView({ chapterId, onBack, onComplete }) {
 
   const next = () => {
     if (isLast) {
-      const score = [...answers, { correct: selected === q.correctAnswer }].filter(a => a.correct).length;
+      // answers already contains the last entry (added by confirm()); don't re-add it
+      const score = answers.filter(a => a.correct).length;
       onComplete(chapterId, score, questions.length);
     } else {
       setQi(i => i + 1);
