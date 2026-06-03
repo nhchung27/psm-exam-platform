@@ -285,7 +285,7 @@ function HomeView({ progress, onStudy, onFlashcards, onQuiz, onGlobalQuiz }) {
           {
             label: 'Ôn tập kiến thức', sub: '5 chương chi tiết',
             color: '#6366F1', bg: 'rgba(99,102,241,.1)', border: 'rgba(99,102,241,.22)',
-            href: '../ISTQB Gen-AI/GenAI-OnTapKienThuc/00-README.md',
+            href: 'genai-ontap-kienthuc.html',
             icon: (
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
@@ -295,7 +295,7 @@ function HomeView({ progress, onStudy, onFlashcards, onQuiz, onGlobalQuiz }) {
           {
             label: 'Sample Exam A', sub: '40 câu giải thích',
             color: '#EC4899', bg: 'rgba(236,72,153,.1)', border: 'rgba(236,72,153,.22)',
-            href: '../ISTQB Gen-AI/CT-GenAI-Sample-Exam-A-Giai-Thich.md',
+            href: 'genai-md-viewer.html?file=CT-GenAI-Sample-Exam-A-Giai-Thich.md',
             icon: (
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
@@ -305,7 +305,7 @@ function HomeView({ progress, onStudy, onFlashcards, onQuiz, onGlobalQuiz }) {
           {
             label: 'Tổng hợp kiến thức', sub: 'CT-GenAI v1.1',
             color: '#06B6D4', bg: 'rgba(6,182,212,.1)', border: 'rgba(6,182,212,.22)',
-            href: '../ISTQB Gen-AI/CT-GenAI-Tong-Hop-Kien-Thuc.md',
+            href: 'genai-md-viewer.html?file=CT-GenAI-Tong-Hop-Kien-Thuc.md',
             icon: (
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
@@ -316,20 +316,22 @@ function HomeView({ progress, onStudy, onFlashcards, onQuiz, onGlobalQuiz }) {
             ),
           },
         ].map((t, i) => (
-          <div key={i}
+          <a key={i} href={t.href}
             style={{
               display: 'flex', alignItems: 'center', gap: '10px',
               padding: '12px 14px', borderRadius: '12px', textDecoration: 'none',
               background: t.bg, border: `1px solid ${t.border}`,
-              transition: 'transform .15s, box-shadow .15s', cursor: 'default',
+              transition: 'transform .15s, box-shadow .15s', cursor: 'pointer',
             }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,.3)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
           >
             <span style={{ color: t.color, flexShrink: 0, display: 'flex' }}>{t.icon}</span>
             <div style={{ minWidth: 0 }}>
               <div style={{ fontSize: '13px', fontWeight: 700, color: t.color, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.label}</div>
               <div style={{ fontSize: '11px', color: 'var(--muted)' }}>{t.sub}</div>
             </div>
-          </div>
+          </a>
         ))}
       </div>
 

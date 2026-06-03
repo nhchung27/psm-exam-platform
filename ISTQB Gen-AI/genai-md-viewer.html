@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CT-GenAI — Tài liệu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0F172A; --surface: #1E293B; --surface-2: #334155;
+      --primary: #6366F1; --text: #F1F5F9; --muted: #94A3B8;
+      --border: rgba(148,163,184,.12);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 3px; }
+
+    #progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: linear-gradient(90deg, #6366F1, #A78BFA); z-index: 200;
+    }
+
+    header {
+      position: sticky; top: 0; background: rgba(15,23,42,.92);
+      backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px; padding: 0 20px;
+      height: 52px; z-index: 100;
+    }
+    .back-btn {
+      display: flex; align-items: center; gap: 6px; padding: 6px 12px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); color: var(--muted); cursor: pointer;
+      font-size: 13px; font-weight: 600; font-family: inherit;
+      text-decoration: none; transition: color .15s, border-color .15s;
+    }
+    .back-btn:hover { color: var(--text); border-color: rgba(148,163,184,.3); }
+    #doc-title { font-size: 14px; font-weight: 700; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    main { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    .md-body { line-height: 1.75; font-size: 15px; }
+    .md-body h1 { font-size: 26px; font-weight: 800; margin: 0 0 24px; }
+    .md-body h2 { font-size: 20px; font-weight: 700; margin: 40px 0 16px; padding-top: 8px; border-top: 1px solid var(--border); }
+    .md-body h3 { font-size: 16px; font-weight: 700; margin: 28px 0 12px; }
+    .md-body h3::before { content: ''; display: inline-block; width: 4px; height: 16px; border-radius: 2px; background: var(--primary); margin-right: 10px; vertical-align: middle; }
+    .md-body h4 { font-size: 14px; font-weight: 700; margin: 20px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .md-body p  { margin: 0 0 14px; }
+    .md-body strong { color: var(--text); font-weight: 700; }
+    .md-body em { color: #7DD3FC; font-style: italic; }
+    .md-body a  { color: var(--primary); text-decoration: none; }
+    .md-body a:hover { text-decoration: underline; }
+    .md-body blockquote { border-left: 3px solid var(--primary); margin: 16px 0; padding: 12px 16px; background: rgba(99,102,241,.07); border-radius: 0 8px 8px 0; }
+    .md-body blockquote p { margin: 0; color: var(--muted); font-size: 14px; }
+    .md-body table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 14px; }
+    .md-body th { background: var(--surface-2); padding: 10px 14px; text-align: left; font-weight: 700; border-bottom: 2px solid rgba(148,163,184,.2); }
+    .md-body td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--muted); vertical-align: top; }
+    .md-body tr:last-child td { border-bottom: none; }
+    .md-body tr:hover td { background: rgba(148,163,184,.04); }
+    .md-body code { background: var(--surface-2); padding: 2px 6px; border-radius: 4px; font-size: 13px; color: #A78BFA; font-family: 'SF Mono','Fira Code',monospace; }
+    .md-body pre  { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin: 16px 0; overflow-x: auto; }
+    .md-body pre code { background: none; padding: 0; color: var(--text); }
+    .md-body ul, .md-body ol { margin: 8px 0 14px 20px; }
+    .md-body li { margin-bottom: 6px; color: var(--muted); }
+    .md-body li strong { color: var(--text); }
+    .md-body hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+    .md-body input[type="checkbox"] { margin-right: 6px; accent-color: var(--primary); }
+
+    .loading { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; min-height: 40vh; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { width: 36px; height: 36px; border: 3px solid var(--surface-2); border-top-color: var(--primary); border-radius: 50%; animation: spin .8s linear infinite; }
+
+    #btn-top {
+      position: fixed; bottom: 24px; right: 24px; width: 40px; height: 40px;
+      border-radius: 10px; border: 1px solid var(--border); background: var(--surface);
+      color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    #btn-top.visible { opacity: 1; pointer-events: all; }
+    #btn-top svg { width: 16px; height: 16px; }
+    #btn-top:hover { color: var(--text); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <header>
+    <a class="back-btn" href="index.html">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Trở về
+    </a>
+    <div id="doc-title">CT-GenAI v1.1</div>
+  </header>
+
+  <main>
+    <div class="md-body" id="md-body">
+      <div class="loading"><div class="spinner"></div><p style="color:var(--muted);font-size:14px;">Đang tải tài liệu...</p></div>
+    </div>
+  </main>
+
+  <button id="btn-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Cuộn lên đầu trang">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <script>
+  (async function () {
+    const params = new URLSearchParams(window.location.search);
+    const file   = params.get('file');
+    const mdBody = document.getElementById('md-body');
+    const bar    = document.getElementById('progress-bar');
+
+    // Progress bar
+    window.addEventListener('scroll', () => {
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      const pct  = docH > 0 ? Math.round(window.scrollY / docH * 100) : 0;
+      bar.style.width = pct + '%';
+      const btn = document.getElementById('btn-top');
+      if (window.scrollY > 400) btn.classList.add('visible');
+      else btn.classList.remove('visible');
+    }, { passive: true });
+
+    if (!file) {
+      mdBody.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px;">Không tìm thấy file. Thêm <code>?file=tên-file.md</code> vào URL.</p>';
+      return;
+    }
+
+    try {
+      const res  = await fetch(file);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const text = await res.text();
+
+      // Set title from first H1
+      const titleMatch = text.match(/^#\s+(.+)/m);
+      if (titleMatch) {
+        document.title = titleMatch[1].replace(/[*_`]/g, '') + ' — CT-GenAI';
+        document.getElementById('doc-title').textContent = titleMatch[1].replace(/[*_`]/g, '');
+      }
+
+      mdBody.innerHTML = marked.parse(text, { gfm: true, breaks: false });
+    } catch (err) {
+      mdBody.innerHTML = `<div class="loading"><p style="color:#F59E0B;">Không thể tải tài liệu.<br><small style="color:var(--muted);">${err.message}</small></p></div>`;
+    }
+  })();
+  </script>
+</body>
+</html>
